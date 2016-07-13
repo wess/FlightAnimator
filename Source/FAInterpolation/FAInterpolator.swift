@@ -31,7 +31,7 @@ public struct FAInterpolator<T : FAAnimatable> {
     mutating func interpolatedAnimationConfig() -> (duration : Double,  values : [AnyObject], springs : Dictionary<String, FASpring>?) {
         
         switch easingFunction {
-        case let .SpringDecay(velocity):
+        case let .springDecay(velocity):
             let newSprings = fromValue.interpolationSprings(toValue,
                                                      initialVelocity: velocity,
                                                      angularFrequency: FAAnimationConfig.SpringDecayFrequency,
@@ -39,7 +39,7 @@ public struct FAInterpolator<T : FAAnimatable> {
             
             return interpolatedSpringValues(newSprings)
             
-        case let .SpringCustom(velocity, frequency, damping):
+        case let .springCustom(velocity, frequency, damping):
             let newSprings = fromValue.interpolationSprings(toValue,
                                                      initialVelocity: velocity,
                                                      angularFrequency: frequency,
@@ -74,7 +74,7 @@ public struct FAInterpolator<T : FAAnimatable> {
         return duration * progress
     }
 
-    private func interpolatedParametricValues(adjustedDuration : CGFloat, easingFunction : FAEasing) -> [AnyObject] {
+    private func interpolatedParametricValues(_ adjustedDuration : CGFloat, easingFunction : FAEasing) -> [AnyObject] {
         
         var newArray = [AnyObject]()
         var animationTime : CGFloat = 0.0
@@ -97,7 +97,7 @@ public struct FAInterpolator<T : FAAnimatable> {
         return newArray
     }
 
-    private func interpolatedSpringValues(springs : Dictionary<String, FASpring>) -> (duration : Double,  values : [AnyObject], springs : Dictionary<String, FASpring>?) {
+    private func interpolatedSpringValues(_ springs : Dictionary<String, FASpring>) -> (duration : Double,  values : [AnyObject], springs : Dictionary<String, FASpring>?) {
         
         var valueArray: Array<AnyObject> = Array<AnyObject>()
         var animationTime : CGFloat = 0.0
@@ -106,7 +106,7 @@ public struct FAInterpolator<T : FAAnimatable> {
         var animationComplete = false
         
         switch easingFunction {
-        case .SpringDecay(_):
+        case .springDecay(_):
             repeat {
                 let newValue = toValue.interpolatedSpringValue(toValue, springs : springs, deltaTime: animationTime)
                
@@ -164,6 +164,6 @@ public struct FAInterpolator<T : FAAnimatable> {
  - returns: the actual value of hte current progress between the relative start and end point
  */
 
-func interpolateCGFloat(start : CGFloat, end : CGFloat, progress : CGFloat) -> CGFloat {
+func interpolateCGFloat(_ start : CGFloat, end : CGFloat, progress : CGFloat) -> CGFloat {
     return start * (1.0 - progress) + end * progress
 }

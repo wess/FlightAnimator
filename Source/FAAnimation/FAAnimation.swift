@@ -14,7 +14,7 @@ final public class FAAnimation : CAKeyframeAnimation {
     weak var weakLayer : CALayer?
     
     // The easing funtion applied to the duration of the animation
-    var easingFunction : FAEasing = FAEasing.Linear
+    var easingFunction : FAEasing = FAEasing.linear
     
     
     // ToValue for the animation
@@ -50,15 +50,15 @@ final public class FAAnimation : CAKeyframeAnimation {
     
     var springs : Dictionary<String, FASpring>?
     
-    func setAnimationAsPrimary(primary : Bool) {
+    func setAnimationAsPrimary(_ primary : Bool) {
         primaryAnimation = primary
     }
     
     func isAnimationPrimary() -> Bool {
         switch self.easingFunction {
-        case .SpringDecay:
+        case .springDecay:
             return true
-        case .SpringCustom(_, _, _):
+        case .springCustom(_, _, _):
             return true
         default:
             return primaryAnimation
@@ -71,15 +71,15 @@ final public class FAAnimation : CAKeyframeAnimation {
         
         calculationMode = kCAAnimationLinear
         fillMode = kCAFillModeForwards
-        removedOnCompletion = true
+        isRemovedOnCompletion = true
     }
     
     required public init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override public func copyWithZone(zone: NSZone) -> AnyObject {
-        let animation = super.copyWithZone(zone) as! FAAnimation
+    override public func copy(with zone: NSZone?) -> AnyObject {
+        let animation = super.copy(with: zone) as! FAAnimation
         animation.weakLayer         = weakLayer
         animation.fromValue         = fromValue
         animation.toValue           = toValue
@@ -93,7 +93,7 @@ final public class FAAnimation : CAKeyframeAnimation {
         configureValues(animation)
     }
     
-    func scrubToProgress(progress : CGFloat) {
+    func scrubToProgress(_ progress : CGFloat) {
         self.weakLayer!.speed = 0.0
         self.weakLayer!.timeOffset = CFTimeInterval(duration * Double(progress))
     }
@@ -101,8 +101,8 @@ final public class FAAnimation : CAKeyframeAnimation {
 
 extension FAAnimation {
 
-    private func configureValues(runningAnimation : FAAnimation? = nil) {
-        if let presentationValue = (weakLayer?.presentationLayer() as? CALayer)?.anyValueForKeyPath(self.keyPath!) {
+    private func configureValues(_ runningAnimation : FAAnimation? = nil) {
+        if let presentationValue = weakLayer?.presentation()?.anyValueForKeyPath(self.keyPath!) {
            if let currentValue = presentationValue as? CGPoint {
                 syncValues(currentValue, runningAnimation : runningAnimation)
             } else  if let currentValue = presentationValue as? CGSize {
@@ -119,7 +119,7 @@ extension FAAnimation {
         }
     }
 
-    private func interpolateValues<T : FAAnimatable>(toValue : T, currentValue : T, previousFromValue : T?) {
+    private func interpolateValues<T : FAAnimatable>(_ toValue : T, currentValue : T, previousFromValue : T?) {
        
         var interpolator  = FAInterpolator(toValue : toValue,
                                            fromValue: currentValue,
@@ -134,7 +134,7 @@ extension FAAnimation {
         values = config.values
     }
     
-    private func syncValues<T : FAAnimatable>(currentValue : T, runningAnimation : FAAnimation?) {
+    private func syncValues<T : FAAnimatable>(_ currentValue : T, runningAnimation : FAAnimation?) {
         
         fromValue = currentValue.valueRepresentation()
         
@@ -152,22 +152,22 @@ extension FAAnimation {
         }
     }
     
-    private func synchronizeAnimationVelocity<T : FAAnimatable>(fromValue : T, runningAnimation : FAAnimation?) {
+    private func synchronizeAnimationVelocity<T : FAAnimatable>(_ fromValue : T, runningAnimation : FAAnimation?) {
         
-        if  let presentationLayer = runningAnimation?.weakLayer?.presentationLayer(),
+        if  let presentationLayer = runningAnimation?.weakLayer?.presentation(),
             let animationStartTime = runningAnimation?.startTime,
             let oldSprings = runningAnimation?.springs {
             
-            let currentTime = presentationLayer.convertTime(CACurrentMediaTime(), toLayer: runningAnimation!.weakLayer)
+            let currentTime = presentationLayer.convertTime(CACurrentMediaTime(), to: runningAnimation!.weakLayer)
             let deltaTime = CGFloat(currentTime - animationStartTime)
             
             let newVelocity =  fromValue.springVelocity(oldSprings, deltaTime: deltaTime)
             
             switch easingFunction {
-            case .SpringDecay(_):
-                easingFunction = .SpringDecay(velocity: newVelocity)
-            case let .SpringCustom(_,frequency,damping):
-                easingFunction = .SpringCustom(velocity: newVelocity, frequency: frequency, ratio: damping)
+            case .springDecay(_):
+                easingFunction = .springDecay(velocity: newVelocity)
+            case let .springCustom(_,frequency,damping):
+                easingFunction = .springCustom(velocity: newVelocity, frequency: frequency, ratio: damping)
             default:
                 break
             }
@@ -178,7 +178,7 @@ extension FAAnimation {
 extension FAAnimation {
     
     func valueProgress() -> CGFloat {
-        if let presentationValue = (weakLayer?.presentationLayer() as? CALayer)?.anyValueForKeyPath(self.keyPath!) {
+        if let presentationValue = weakLayer?.presentation()?.anyValueForKeyPath(self.keyPath!) {
             
             if let currentValue = presentationValue as? CGPoint {
                 return valueProgress(currentValue)
@@ -199,13 +199,13 @@ extension FAAnimation {
     }
     
     func timeProgress() -> CGFloat {
-        let currentTime = weakLayer?.presentationLayer()!.convertTime(CACurrentMediaTime(), toLayer: nil)
+        let currentTime = weakLayer?.presentation()!.convertTime(CACurrentMediaTime(), to: nil)
         let difference = currentTime! - startTime!
         
         return CGFloat(round(100 * (difference / duration))/100) + 0.03333333333
     }
     
-    private func valueProgress<T : FAAnimatable>(currentValue : T) -> CGFloat {
+    private func valueProgress<T : FAAnimatable>(_ currentValue : T) -> CGFloat {
        
         if let typedToValue = (toValue as? NSValue)?.typeValue() as? T,
            let typedFromValue = (fromValue as? NSValue)?.typeValue() as? T{

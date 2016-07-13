@@ -28,7 +28,7 @@ internal struct AnimationTrigger : Equatable {
 
 final public class FAAnimationGroup : CAAnimationGroup {
     
-    var primaryTimingPriority : FAPrimaryTimingPriority = .MaxTime
+    var primaryTimingPriority : FAPrimaryTimingPriority = .maxTime
     var animationKey : String?
     
     weak var weakLayer : CALayer? {
@@ -59,7 +59,7 @@ final public class FAAnimationGroup : CAAnimationGroup {
     }
     
     // This is used to
-    private var primaryEasingFunction : FAEasing = FAEasing.Linear
+    private var primaryEasingFunction : FAEasing = FAEasing.linear
     private var primaryAnimation : FAAnimation?
     
     private var displayLink : CADisplayLink?
@@ -71,15 +71,15 @@ final public class FAAnimationGroup : CAAnimationGroup {
         super.init()
         animations = [CAAnimation]()
         fillMode = kCAFillModeForwards
-        removedOnCompletion = true
+        isRemovedOnCompletion = true
     }
     
     required public init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override public func copyWithZone(zone: NSZone) -> AnyObject {
-        let animationGroup = super.copyWithZone(zone) as! FAAnimationGroup
+    override public func copy(with zone: NSZone?) -> AnyObject {
+        let animationGroup = super.copy(with: zone) as! FAAnimationGroup
         animationGroup.weakLayer                = weakLayer
         animationGroup.startTime                = startTime
         animationGroup.animationKey             = animationKey
@@ -97,24 +97,24 @@ final public class FAAnimationGroup : CAAnimationGroup {
 
 extension FAAnimationGroup {
     
-    func synchronizeAnimationGroup(oldAnimationGroup : FAAnimationGroup?) {
+    func synchronizeAnimationGroup(_ oldAnimationGroup : FAAnimationGroup?) {
         synchronizeAnimations(oldAnimationGroup)
     }
     
-    func scrubToProgress(progress : CGFloat) {
+    func scrubToProgress(_ progress : CGFloat) {
         weakLayer?.speed = 0.0
         weakLayer?.timeOffset = CFTimeInterval(duration * Double(progress))
     }
     
-    func applyFinalState(animated : Bool = false) {
+    func applyFinalState(_ animated : Bool = false) {
         stopTriggerTimer()
         
         if let animationLayer = weakLayer {
             if animated {
                 animationLayer.speed = 1.0
                 animationLayer.timeOffset = 0.0
-                startTime = animationLayer.convertTime(CACurrentMediaTime(), fromLayer: nil)
-                animationLayer.addAnimation(self, forKey: self.animationKey)
+                startTime = animationLayer.convertTime(CACurrentMediaTime(), from: nil)
+                animationLayer.add(self, forKey: self.animationKey)
             }
             
             if let subAnimations = animations {
@@ -128,7 +128,7 @@ extension FAAnimationGroup {
                         if subAnimation.keyPath! == "opacity" {
                             animationLayer.owningView()!.setValue(toValue, forKeyPath: "alpha")
                         } else {
-                            animationLayer.modelLayer().setValue(toValue, forKeyPath: subAnimation.keyPath!)
+                            animationLayer.model().setValue(toValue, forKeyPath: subAnimation.keyPath!)
                         }
                     }
                 }
@@ -144,7 +144,7 @@ extension FAAnimationGroup {
 
 extension FAAnimationGroup {
     
-    private func synchronizeAnimations(oldAnimationGroup : FAAnimationGroup?) {
+    private func synchronizeAnimations(_ oldAnimationGroup : FAAnimationGroup?) {
         
         var durationArray =  [Double]()
         
@@ -190,15 +190,15 @@ extension FAAnimationGroup {
 
     }
     
-    private func updateGroupDurationBasedOnTimePriority(durationArray: Array<CFTimeInterval>) {
+    private func updateGroupDurationBasedOnTimePriority(_ durationArray: Array<CFTimeInterval>) {
         switch primaryTimingPriority {
-        case .MaxTime:
-            duration = durationArray.maxElement()!
-        case .MinTime:
-            duration = durationArray.minElement()!
-        case .Median:
-            duration = durationArray.sort(<)[durationArray.count / 2]
-        case .Average:
+        case .maxTime:
+            duration = durationArray.max()!
+        case .minTime:
+            duration = durationArray.min()!
+        case .median:
+            duration = durationArray.sorted(isOrderedBefore: <)[durationArray.count / 2]
+        case .average:
             duration = durationArray.reduce(0, combine: +) / Double(durationArray.count)
         }
         
@@ -221,9 +221,9 @@ extension FAAnimationGroup {
             
             if let customAnimation = animation as? FAAnimation {
                 switch customAnimation.easingFunction {
-                case .SpringDecay(_):
+                case .springDecay(_):
                     break
-                case .SpringCustom(_, _, _):
+                case .springCustom(_, _, _):
                     break
                 default:
                     customAnimation.synchronize()
@@ -234,7 +234,7 @@ extension FAAnimationGroup {
         }
     }
 
-    private func animationDictionaryForGroup(animationGroup : FAAnimationGroup?) -> [String : FAAnimation] {
+    private func animationDictionaryForGroup(_ animationGroup : FAAnimationGroup?) -> [String : FAAnimation] {
         var animationDictionary = [String: FAAnimation]()
         
         if let group = animationGroup {
@@ -281,14 +281,14 @@ extension FAAnimationGroup {
         
         if displayLink == nil {
             displayLink = CADisplayLink(target: self, selector: #selector(FAAnimationGroup.updateLoop))
-            displayLink!.addToRunLoop(NSRunLoop.mainRunLoop(), forMode: NSDefaultRunLoopMode)
-            displayLink!.paused = false
+            displayLink!.add(to: RunLoop.main(), forMode: RunLoopMode.defaultRunLoopMode.rawValue)
+            displayLink!.isPaused = false
         }
     }
     
     private func stopTriggerTimer() {
-        displayLink?.paused = true
-        displayLink?.removeFromRunLoop(NSRunLoop.mainRunLoop(), forMode: NSDefaultRunLoopMode)
+        displayLink?.isPaused = true
+        displayLink?.remove(from: RunLoop.main(), forMode: RunLoopMode.defaultRunLoopMode.rawValue)
         displayLink = nil
     }
 }

@@ -56,19 +56,19 @@ public protocol FAAnimatable : Equatable {
     // Magnitude Calculations
     func magnitudeValue() -> CGFloat
     
-    func magnitudeToValue<T : FAAnimatable>(toValue:  T) -> CGFloat
+    func magnitudeToValue<T : FAAnimatable>(_ toValue:  T) -> CGFloat
     
     // Parametric Interpolation
-    func interpolatedValue<T : FAAnimatable>(toValue : T, progress : CGFloat) ->  AnyObject
+    func interpolatedValue<T : FAAnimatable>(_ toValue : T, progress : CGFloat) ->  AnyObject
     
     // Calculates the value at delta time
-    func interpolatedSpringValue<T : FAAnimatable>(toValue : T, springs : Dictionary<String, FASpring>, deltaTime : CGFloat) -> AnyObject
+    func interpolatedSpringValue<T : FAAnimatable>(_ toValue : T, springs : Dictionary<String, FASpring>, deltaTime : CGFloat) -> AnyObject
     
     // Calculates the value at delta time
-    func springVelocity(springs : Dictionary<String, FASpring>, deltaTime : CGFloat) -> CGPoint
+    func springVelocity(_ springs : Dictionary<String, FASpring>, deltaTime : CGFloat) -> CGPoint
     
     // Generate a dictionary of FASpring instances per dimension of the animatable value
-    func interpolationSprings<T : FAAnimatable>(toValue : T,
+    func interpolationSprings<T : FAAnimatable>(_ toValue : T,
                               initialVelocity : Any,
                               angularFrequency : CGFloat,
                               dampingRatio : CGFloat) -> Dictionary<String, FASpring>

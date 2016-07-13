@@ -15,9 +15,9 @@ public class FAAnimationMaker {
     internal var animationKey : String?
     
     var animationConfigurations = [String : PropertyAnimationConfig]()
-    var primaryTimingPriority : FAPrimaryTimingPriority = .MaxTime
+    var primaryTimingPriority : FAPrimaryTimingPriority = .maxTime
     
-    init(withView view : UIView, forKey key: String, priority : FAPrimaryTimingPriority = .MaxTime) {
+    init(withView view : UIView, forKey key: String, priority : FAPrimaryTimingPriority = .maxTime) {
         animationKey = key
         associatedView = view
         primaryTimingPriority = priority
@@ -38,12 +38,12 @@ public class FAAnimationMaker {
         associatedView!.cachedAnimations![animationKey!] = newGroup
     }
     
-    internal func triggerAnimation(timingPriority : FAPrimaryTimingPriority = .MaxTime,
+    internal func triggerAnimation(_ timingPriority : FAPrimaryTimingPriority = .maxTime,
                                    timeBased : Bool,
                                    key: String,
                                    view: UIView,
                                    progress: CGFloat = 0.0,
-                                   @noescape animator: (animator : FlightAnimator) -> Void) {
+                                   animator: @noescape(animator : FlightAnimator) -> Void) {
 
         if let animationGroup = associatedView!.cachedAnimations![animationKey!] {
             
@@ -64,9 +64,9 @@ public protocol PropertyAnimationConfig {
     var easingCurve : FAEasing { get }
     var duration : CGFloat { get }
     
-    func duration(duration : CGFloat) -> PropertyAnimationConfig
-    func easing(easing : FAEasing) -> PropertyAnimationConfig
-    func primary(primary : Bool) -> PropertyAnimationConfig
+    @discardableResult func duration(_ duration : CGFloat) -> PropertyAnimationConfig
+    @discardableResult func easing(_ easing : FAEasing) -> PropertyAnimationConfig
+    @discardableResult func primary(_ primary : Bool) -> PropertyAnimationConfig
 }
 
 private class Configuration {
@@ -84,7 +84,7 @@ internal class ConfigurationValue<T : FAAnimatable> : PropertyAnimationConfig {
     private var keyPath : String?
     
     var toValue : T
-    var easingCurve : FAEasing = .Linear
+    var easingCurve : FAEasing = .linear
     var duration : CGFloat
     var primary : Bool
     
@@ -93,24 +93,24 @@ internal class ConfigurationValue<T : FAAnimatable> : PropertyAnimationConfig {
         self.associatedView = view
         self.keyPath = key
         self.toValue = value
-        self.easingCurve = .Linear
+        self.easingCurve = .linear
         self.duration = 0.0
         self.primary = false
     }
     
-    func duration(duration : CGFloat) -> PropertyAnimationConfig {
+    @discardableResult func duration(_ duration : CGFloat) -> PropertyAnimationConfig {
         self.duration = duration
         updateAnimation()
         return self
     }
     
-    func easing(easing : FAEasing) -> PropertyAnimationConfig {
+    @discardableResult func easing(_ easing : FAEasing) -> PropertyAnimationConfig {
         self.easingCurve = easing
         updateAnimation()
         return self
     }
     
-    func primary(primary : Bool) -> PropertyAnimationConfig {
+    @discardableResult func primary(_ primary : Bool) -> PropertyAnimationConfig {
         self.primary = primary
         updateAnimation()
         return self

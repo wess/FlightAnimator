@@ -94,7 +94,7 @@ public struct FASpring {
      
      - returns: The current value in time, based on the velocity, angular frequency and damping
      */
-    func updatedValue(deltaTime: CGFloat) -> CGFloat {
+    func updatedValue(_ deltaTime: CGFloat) -> CGFloat {
         
         // Over Damped
         if dampingRatio > 1.0 + CGFLT_EPSILON {
@@ -133,7 +133,7 @@ public struct FASpring {
      
      - returns: The current velocity of the single CGFoloat value animating
      */
-    func velocity(deltaTime : CGFloat) -> CGFloat {
+    func velocity(_ deltaTime : CGFloat) -> CGFloat {
         // Over Damped
         if dampingRatio > 1.0 + CGFLT_EPSILON {
             let expTerm1 = exp(z1 * deltaTime)

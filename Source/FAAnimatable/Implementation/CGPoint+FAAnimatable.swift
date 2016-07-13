@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 
 public func ==(lhs:CGPoint, rhs:CGPoint) -> Bool {
-    return  CGPointEqualToPoint(lhs, rhs)
+    return  lhs.equalTo(rhs)
 }
 
 extension CGPoint : FAAnimatable {
@@ -21,26 +21,26 @@ extension CGPoint : FAAnimatable {
         return sqrt((x * x) + (y * y))
     }
     
-    public func magnitudeToValue<T : FAAnimatable>(toValue:  T) -> CGFloat {
+    public func magnitudeToValue<T : FAAnimatable>(_ toValue:  T) -> CGFloat {
         
         if let toValue = toValue as? CGPoint {
-            return CGPointMake(toValue.x - x, toValue.y - y).magnitudeValue()
+            return CGPoint(x: toValue.x - x, y: toValue.y - y).magnitudeValue()
         }
         
-        return CGPointZero.magnitudeValue()
+        return CGPoint.zero.magnitudeValue()
     }
     
-    public func interpolatedValue<T : FAAnimatable>(toValue : T, progress : CGFloat) -> AnyObject {
+    public func interpolatedValue<T : FAAnimatable>(_ toValue : T, progress : CGFloat) -> AnyObject {
         if let toValue = toValue as? CGPoint {
             let adjustedx : CGFloat = interpolateCGFloat(self.x, end: toValue.x, progress: progress)
             let adjustedy : CGFloat = interpolateCGFloat(self.y, end: toValue.y, progress: progress)
-            return  CGPointMake(adjustedx, adjustedy).valueRepresentation()
+            return  CGPoint(x: adjustedx, y: adjustedy).valueRepresentation()
         }
         
-        return CGPointZero.valueRepresentation()
+        return CGPoint.zero.valueRepresentation()
     }
 
-    public func interpolationSprings<T : FAAnimatable>(toValue : T, initialVelocity : Any, angularFrequency : CGFloat, dampingRatio : CGFloat) -> Dictionary<String, FASpring> {
+    public func interpolationSprings<T : FAAnimatable>(_ toValue : T, initialVelocity : Any, angularFrequency : CGFloat, dampingRatio : CGFloat) -> Dictionary<String, FASpring> {
         var springs = Dictionary<String, FASpring>()
         
         if let startingVelocity = initialVelocity as? CGPoint {
@@ -54,22 +54,22 @@ extension CGPoint : FAAnimatable {
         return springs
     }
     
-    public func interpolatedSpringValue<T : FAAnimatable>(toValue : T, springs : Dictionary<String, FASpring>, deltaTime : CGFloat) -> AnyObject {
+    public func interpolatedSpringValue<T : FAAnimatable>(_ toValue : T, springs : Dictionary<String, FASpring>, deltaTime : CGFloat) -> AnyObject {
         let adjustedx : CGFloat = springs[SpringAnimationKey.CGPointX]!.updatedValue(deltaTime)
         let adjustedy : CGFloat = springs[SpringAnimationKey.CGPointY]!.updatedValue(deltaTime)
-        return CGPointMake(adjustedx, adjustedy).valueRepresentation()
+        return CGPoint(x: adjustedx, y: adjustedy).valueRepresentation()
     }
     
-    public func springVelocity(springs : Dictionary<String, FASpring>, deltaTime : CGFloat) -> CGPoint {
+    public func springVelocity(_ springs : Dictionary<String, FASpring>, deltaTime : CGFloat) -> CGPoint {
         if let currentXVelocity = springs[SpringAnimationKey.CGPointX]?.velocity(deltaTime),
             let currentYVelocity = springs[SpringAnimationKey.CGPointY]?.velocity(deltaTime) {
-                return  CGPointMake(currentXVelocity, currentYVelocity)
+                return  CGPoint(x: currentXVelocity, y: currentYVelocity)
         }
         
-        return CGPointZero
+        return CGPoint.zero
     }
     
     public func valueRepresentation() -> AnyObject {
-         return NSValue(CGPoint :  self)
+         return NSValue(cgPoint :  self)
     }
 }

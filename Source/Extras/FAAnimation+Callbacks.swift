@@ -18,31 +18,31 @@ class FAAnimationDelegate : NSObject {
     var animationDidStart : FAAnimationDidStart?
     var animationDidStop : FAAnimationDidStop?
     
-    override func animationDidStart(anim: CAAnimation) {
+    override func animationDidStart(_ anim: CAAnimation) {
         if let startCallback = animationDidStart {
             startCallback(anim : anim)
         }
     }
     
-    override func animationDidStop(anim: CAAnimation, finished flag: Bool) {
+    override func animationDidStop(_ anim: CAAnimation, finished flag: Bool) {
         if let stopCallback = animationDidStop {
             stopCallback(anim : anim, complete: flag)
           
         }
     }
     
-    func setDidStopCallback(stopCallback : FAAnimationDidStop) {
+    func setDidStopCallback(_ stopCallback : FAAnimationDidStop) {
         animationDidStop = stopCallback
     }
     
-    func setDidStartCallback(startCallback : FAAnimationDidStart) {
+    func setDidStartCallback(_ startCallback : FAAnimationDidStart) {
         animationDidStart = startCallback
     }
 }
 
 public extension CAAnimation {
     
-    public func setDidStopCallback(stopCallback : FAAnimationDidStop) {
+    public func setDidStopCallback(_ stopCallback : FAAnimationDidStop) {
        
         if callbacksSupported() == false {
             print("DidStopCallbacks are not supported for \(self)")
@@ -65,7 +65,7 @@ public extension CAAnimation {
         self.delegate = activeDelegate
     }
     
-    public func setDidStartCallback(startCallback : FAAnimationDidStart) {
+    public func setDidStartCallback(_ startCallback : FAAnimationDidStart) {
         
         if callbacksSupported() == false {
             print("DidStartCallback are not supported for \(self)")

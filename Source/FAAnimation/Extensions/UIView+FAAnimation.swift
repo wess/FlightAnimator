@@ -26,7 +26,7 @@ extension UIView {
         }
     }
     
-    private func fa_setAssociatedObject<T>(object: AnyObject,
+    private func fa_setAssociatedObject<T>(_ object: AnyObject,
                                      value: T,
                                      associativeKey: UnsafePointer<Void>,
                                      policy: objc_AssociationPolicy) {
@@ -38,7 +38,7 @@ extension UIView {
         }
     }
     
-    private func fa_getAssociatedObject<T>(object: AnyObject, associativeKey: UnsafePointer<Void>) -> T? {
+    private func fa_getAssociatedObject<T>(_ object: AnyObject, associativeKey: UnsafePointer<Void>) -> T? {
         if let v = objc_getAssociatedObject(object, associativeKey) as? T {
             return v
         } else if let v = objc_getAssociatedObject(object, associativeKey) as? ValueWrapper<T> {
@@ -48,13 +48,13 @@ extension UIView {
         }
     }
     
-    func applyAnimationsToSubViews(inView : UIView, forKey key: String, animated : Bool = true) {
+    func applyAnimationsToSubViews(_ inView : UIView, forKey key: String, animated : Bool = true) {
         for subView in inView.subviews {
             subView.applyAnimation(forKey: key, animated: animated)
         }
     }
     
-    func appendAnimation(animation : AnyObject, forKey key: String) {
+    func appendAnimation(_ animation : AnyObject, forKey key: String) {
         
         if self.cachedAnimations == nil {
             cachedAnimations = [String : FAAnimationGroup]()
@@ -73,12 +73,12 @@ extension UIView {
         }
     }
     
-    internal func attachAnimation(animation : AnyObject,
+    internal func attachAnimation(_ animation : AnyObject,
                                   forKey key: String) {
         
         if cachedAnimations != nil {
           //  if let animation = cachedAnimations![key] {
-          //      animation.stopUpdateLoop()
+          //      
           //  }
         }
         
@@ -88,13 +88,13 @@ extension UIView {
 
 extension Array where Element : Equatable {
     
-    mutating func removeObject(object : Generator.Element) {
-        if let index = indexOf(object) {
-            removeAtIndex(index)
+    mutating func removeObject(_ object : Iterator.Element) {
+        if let index = index(of: object) {
+            remove(at: index)
         }
     }
     
-    func contains<T where T : Equatable>(obj: T) -> Bool {
+    func contains<T where T : Equatable>(_ obj: T) -> Bool {
         return filter({$0 as? T == obj}).count > 0
     }
 }

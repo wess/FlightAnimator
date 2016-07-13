@@ -28,11 +28,11 @@ class FAPanGestureRecognizer : UIPanGestureRecognizer {
         self.animationGroup = animationGroup
     }
     
-    override init(target: AnyObject?, action: Selector) {
+    override init(target: AnyObject?, action: Selector?) {
         super.init(target: target, action: action)
     }
     
-    func copyWithZone(zone: NSZone) -> AnyObject {
+    func copyWithZone(_ zone: NSZone?) -> AnyObject {
         let gesture = self.copy() as! FAPanGestureRecognizer
         gesture.startPosition             = startPosition
         gesture.currentPosition           = currentPosition
@@ -53,54 +53,54 @@ class FAPanGestureRecognizer : UIPanGestureRecognizer {
     var gestureCancelledCallBack    : FAAnimationGestureCancelled?
     var gestureFailedCallBack       : FAAnimationGestureFailed?
     
-    func setPossibleCallBack(callback : FAAnimationGesturePossible) {
+    func setPossibleCallBack(_ callback : FAAnimationGesturePossible) {
         gesturePossibleCallBack = callback
     }
     
-    func setBeganCallBack(callback : FAAnimationGestureBegan) {
+    func setBeganCallBack(_ callback : FAAnimationGestureBegan) {
         gestureBeganCallBack = callback
     }
     
-    func setChangedCallBack (callback : FAAnimationGestureChanged) {
+    func setChangedCallBack (_ callback : FAAnimationGestureChanged) {
         gestureChangedCallBack = callback
     }
     
-    func setEndedCallBack (callback : FAAnimationGestureEnded) {
+    func setEndedCallBack (_ callback : FAAnimationGestureEnded) {
         gestureEndedCallBack = callback
     }
     
-    func setCancelledCallBack(callback : FAAnimationGestureCancelled) {
+    func setCancelledCallBack(_ callback : FAAnimationGestureCancelled) {
         gestureCancelledCallBack = callback
     }
     
-    func setFailedCallBack(callback : FAAnimationGestureFailed) {
+    func setFailedCallBack(_ callback : FAAnimationGestureFailed) {
         gestureFailedCallBack = callback
     }
     
-    @objc private func respondToPanRecognizer(recognizer : FAPanGestureRecognizer) {
+    @objc private func respondToPanRecognizer(_ recognizer : FAPanGestureRecognizer) {
         switch state {
-        case .Possible:
+        case .possible:
             if let callback = gesturePossibleCallBack {
                 callback(recognizer: self)
             }
-        case .Began:
+        case .began:
             if let animationLayer = animationGroup?.weakLayer,
                let owningView = animationLayer.owningView() {
-                startPosition = recognizer.translationInView(owningView.superview)
+                startPosition = recognizer.translation(in: owningView.superview)
                 animationLayer.speed = 0.0
-                animationLayer.addAnimation(animationGroup!, forKey: animationGroup?.animationKey)
+                animationLayer.add(animationGroup!, forKey: animationGroup?.animationKey)
             }
             
             if let callback = gestureBeganCallBack {
                 callback(recognizer: self)
             }
-        case .Changed:
+        case .changed:
             if  let callback = gestureChangedCallBack,
                 let group = animationGroup,
                 let animationLayer = animationGroup?.weakLayer,
                 let owningView = animationLayer.owningView() {
                 
-                let translationPoint = recognizer.translationInView(owningView.superview)
+                let translationPoint = recognizer.translation(in: owningView.superview)
                 
                 let progress = callback(recognizer: self,
                                         startPosition : startPosition!,
@@ -108,9 +108,9 @@ class FAPanGestureRecognizer : UIPanGestureRecognizer {
                 
                 group.scrubToProgress(progress)
             }
-        case .Ended:
+        case .ended:
             if let animationLayer = animationGroup?.weakLayer {
-                animationLayer.addAnimation(animationGroup!, forKey:  animationGroup?.animationKey)
+                animationLayer.add(animationGroup!, forKey:  animationGroup?.animationKey)
                 animationGroup!.applyFinalState(true)
                 
             }
@@ -118,11 +118,11 @@ class FAPanGestureRecognizer : UIPanGestureRecognizer {
             if let callback = gestureEndedCallBack {
                 callback(recognizer: self)
             }
-        case .Cancelled:
+        case .cancelled:
             if let callback = gestureCancelledCallBack {
                 callback(recognizer: self)
             }
-        case .Failed:
+        case .failed:
             if let callback = gestureFailedCallBack {
                 callback(recognizer: self)
             }

@@ -19,16 +19,16 @@ import UIKit
  - Average: <#Average description#>
  */
 public enum FAPrimaryTimingPriority : Int {
-    case MaxTime
-    case MinTime
-    case Median
-    case Average
+    case maxTime
+    case minTime
+    case median
+    case average
 }
 
 public func registerAnimation(onView view : UIView,
                               forKey key: String,
-                              timingPriority : FAPrimaryTimingPriority = .MaxTime,
-                              @noescape animator : (animator : FlightAnimator) -> Void ) {
+                              timingPriority : FAPrimaryTimingPriority = .maxTime,
+                              animator : @noescape(animator : FlightAnimator) -> Void ) {
     
     let newAnimator = FlightAnimator(withView: view, forKey : key, priority : timingPriority)
     animator(animator : newAnimator)
@@ -36,7 +36,7 @@ public func registerAnimation(onView view : UIView,
 
 public extension UIView {
     
-    func animate(timingPriority : FAPrimaryTimingPriority = .MaxTime, @noescape animator : (animator : FlightAnimator) -> Void ) {
+    func animate(_ timingPriority : FAPrimaryTimingPriority = .maxTime, animator : @noescape(animator : FlightAnimator) -> Void ) {
         let newAnimator = FlightAnimator(withView: self, forKey : "AppliedAnimation",  priority : timingPriority)
         animator(animator : newAnimator)
         applyAnimation(forKey: "AppliedAnimation")
@@ -61,43 +61,43 @@ public extension UIView {
 
 public class FlightAnimator : FAAnimationMaker {
     
-    public func setDidStopCallback(stopCallback : FAAnimationDidStop) {
+    public func setDidStopCallback(_ stopCallback : FAAnimationDidStop) {
         if ((associatedView?.cachedAnimations?.keys.contains(animationKey!)) != nil) {
              associatedView!.cachedAnimations![animationKey!]!.setDidStopCallback(stopCallback)
         }
     }
     
-    public func setDidStartCallback(startCallback : FAAnimationDidStart) {
+    public func setDidStartCallback(_ startCallback : FAAnimationDidStart) {
         if ((associatedView?.cachedAnimations?.keys.contains(animationKey!)) != nil) {
             associatedView!.cachedAnimations![animationKey!]!.setDidStartCallback(startCallback)
         }
     }
     
-    public func triggerOnStart(timingPriority : FAPrimaryTimingPriority = .MaxTime,
+    public func triggerOnStart(_ timingPriority : FAPrimaryTimingPriority = .maxTime,
                                onView view: UIView,
-                               @noescape animator: (animator : FlightAnimator) -> Void) {
+                               animator: @noescape(animator : FlightAnimator) -> Void) {
         triggerAnimation(timingPriority, timeBased : true, key: animationKey!, view: view, progress: 0.0, animator: animator)
     }
     
-    public func triggerAtTimeProgress(timingPriority : FAPrimaryTimingPriority = .MaxTime,
+    public func triggerAtTimeProgress(_ timingPriority : FAPrimaryTimingPriority = .maxTime,
                                       atProgress progress: CGFloat,
                                       onView view: UIView,
-                                      @noescape animator: (animator : FlightAnimator) -> Void) {
+                                      animator: @noescape(animator : FlightAnimator) -> Void) {
         triggerAnimation(timingPriority, timeBased : true, key: animationKey!, view: view, progress: progress, animator: animator)
     }
     
-    public func triggerAtValueProgress(timingPriority : FAPrimaryTimingPriority = .MaxTime,
+    @discardableResult public func triggerAtValueProgress(_ timingPriority : FAPrimaryTimingPriority = .maxTime,
                                        atProgress progress: CGFloat,
                                        onView view: UIView,
-                                       @noescape animator: (animator : FlightAnimator) -> Void) {
+                                       animator: @noescape(animator : FlightAnimator) -> Void) {
         triggerAnimation(timingPriority, timeBased : false, key: animationKey!, view: view, progress: progress, animator: animator)
     }
     
     
-    public func value<T : FAAnimatable>(value : T, forKeyPath key : String) -> PropertyAnimationConfig {
+    @discardableResult  public func value<T : FAAnimatable>(_ value : T, forKeyPath key : String) -> PropertyAnimationConfig {
         
         if let value = value as? UIColor {
-            animationConfigurations[key] = ConfigurationValue(value: value.CGColor, forKeyPath: key, view : associatedView!, animationKey: animationKey!)
+            animationConfigurations[key] = ConfigurationValue(value: value.cgColor, forKeyPath: key, view : associatedView!, animationKey: animationKey!)
         } else {
             animationConfigurations[key] = ConfigurationValue(value: value, forKeyPath: key, view : associatedView!, animationKey: animationKey!)
         }
@@ -105,75 +105,75 @@ public class FlightAnimator : FAAnimationMaker {
         return animationConfigurations[key]!
     }
     
-    public func alpha(value : CGFloat) -> PropertyAnimationConfig {
+    @discardableResult public func alpha(_ value : CGFloat) -> PropertyAnimationConfig {
         return self.value(value, forKeyPath : "opacity")
     }
     
-    public func anchorPoint<T : FAAnimatable>(value : T) -> PropertyAnimationConfig {
+    @discardableResult public func anchorPoint<T : FAAnimatable>(_ value : T) -> PropertyAnimationConfig {
         return self.value(value, forKeyPath : "anchorPoint")
     }
     
-    public func backgroundColor<T : FAAnimatable>(value : T) -> PropertyAnimationConfig {
+    @discardableResult public func backgroundColor<T : FAAnimatable>(_ value : T) -> PropertyAnimationConfig {
         return self.value(value, forKeyPath : "backgroundColor")
     }
     
-    public func bounds<T : FAAnimatable>(value : T) -> PropertyAnimationConfig {
+    @discardableResult public func bounds<T : FAAnimatable>(_ value : T) -> PropertyAnimationConfig {
         return self.value(value, forKeyPath : "bounds")
     }
     
-    public func borderColor<T : FAAnimatable>(value : T) -> PropertyAnimationConfig {
+    @discardableResult public func borderColor<T : FAAnimatable>(_ value : T) -> PropertyAnimationConfig {
         return self.value(value, forKeyPath : "borderColor")
     }
     
-    public func borderWidth<T : FAAnimatable>(value : T) -> PropertyAnimationConfig {
+    @discardableResult public func borderWidth<T : FAAnimatable>(_ value : T) -> PropertyAnimationConfig {
         return self.value(value, forKeyPath : "borderWidth")
     }
 
-    public func contentsRect<T : FAAnimatable>(value : T) -> PropertyAnimationConfig{
+    @discardableResult public func contentsRect<T : FAAnimatable>(_ value : T) -> PropertyAnimationConfig{
         return self.value(value, forKeyPath : "contentsRect")
     }
     
-    public func cornerRadius<T : FAAnimatable>(value : T) -> PropertyAnimationConfig {
+    @discardableResult public func cornerRadius<T : FAAnimatable>(_ value : T) -> PropertyAnimationConfig {
         return self.value(value, forKeyPath : "cornerRadius")
     }
     
-    public func opacity<T : FAAnimatable>(value : T) -> PropertyAnimationConfig {
+    @discardableResult public func opacity<T : FAAnimatable>(_ value : T) -> PropertyAnimationConfig {
         return self.value(value, forKeyPath : "opacity")
     }
     
-    public func position<T : FAAnimatable>(value : T) -> PropertyAnimationConfig {
+    @discardableResult public func position<T : FAAnimatable>(_ value : T) -> PropertyAnimationConfig {
         return self.value(value, forKeyPath : "position")
     }
     
-    public func shadowColor<T : FAAnimatable>(value : T) -> PropertyAnimationConfig {
+    @discardableResult public func shadowColor<T : FAAnimatable>(_ value : T) -> PropertyAnimationConfig {
         return self.value(value, forKeyPath : "shadowColor")
     }
     
-    public func shadowOffset<T : FAAnimatable>(value : T) -> PropertyAnimationConfig {
+    @discardableResult public func shadowOffset<T : FAAnimatable>(_ value : T) -> PropertyAnimationConfig {
         return self.value(value, forKeyPath : "shadowOffset")
     }
     
-    public func shadowOpacity<T : FAAnimatable>(value : T) -> PropertyAnimationConfig {
+    @discardableResult  public func shadowOpacity<T : FAAnimatable>(_ value : T) -> PropertyAnimationConfig {
         return self.value(value, forKeyPath : "shadowOpacity")
     }
     
-    public func shadowRadius<T : FAAnimatable>(value : T) -> PropertyAnimationConfig {
+    @discardableResult public func shadowRadius<T : FAAnimatable>(_ value : T) -> PropertyAnimationConfig {
         return self.value(value, forKeyPath : "shadowRadius")
     }
     
-    public func size<T : FAAnimatable>(value : T) -> PropertyAnimationConfig {
-        return bounds(CGRectMake(0, 0, (value as? CGSize)!.width, (value as? CGSize)!.height))
+    @discardableResult public func size<T : FAAnimatable>(_ value : T) -> PropertyAnimationConfig {
+        return bounds(CGRect(x: 0, y: 0, width: (value as? CGSize)!.width, height: (value as? CGSize)!.height))
     }
     
-    public func sublayerTransform<T : FAAnimatable>(value : T) -> PropertyAnimationConfig {
+    @discardableResult public func sublayerTransform<T : FAAnimatable>(_ value : T) -> PropertyAnimationConfig {
         return self.value(value, forKeyPath : "sublayerTransform")
     }
     
-    public func transform<T : FAAnimatable>(value : T) -> PropertyAnimationConfig{
+    @discardableResult public func transform<T : FAAnimatable>(_ value : T) -> PropertyAnimationConfig{
         return self.value(value, forKeyPath : "transform")
     }
     
-    public func animateZPosition<T : FAAnimatable>(value : T) -> PropertyAnimationConfig {
+    @discardableResult public func animateZPosition<T : FAAnimatable>(_ value : T) -> PropertyAnimationConfig {
         return self.value(value, forKeyPath : "animateZPosition")
     }
 }

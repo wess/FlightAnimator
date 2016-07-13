@@ -17,22 +17,22 @@ extension CGFloat : FAAnimatable {
         return sqrt((self * self))
     }
     
-    public func magnitudeToValue<T : FAAnimatable>(toValue:  T) -> CGFloat {
+    public func magnitudeToValue<T : FAAnimatable>(_ toValue:  T) -> CGFloat {
         return self - toValue.magnitudeValue()
     }
     
-    public func interpolatedValue<T : FAAnimatable>(toValue : T, progress : CGFloat) -> AnyObject {
+    public func interpolatedValue<T : FAAnimatable>(_ toValue : T, progress : CGFloat) -> AnyObject {
         return interpolateCGFloat(self, end: (toValue as! CGFloat), progress: progress).valueRepresentation()
     }
     
-    public func springVelocity(springs : Dictionary<String, FASpring>, deltaTime : CGFloat) -> CGPoint {
+    public func springVelocity(_ springs : Dictionary<String, FASpring>, deltaTime : CGFloat) -> CGPoint {
         if let currentFloatVelocity = springs[SpringAnimationKey.CGFloat]?.velocity(deltaTime) {
-           return  CGPointMake(currentFloatVelocity, currentFloatVelocity)
+           return  CGPoint(x: currentFloatVelocity, y: currentFloatVelocity)
         }
         
-        return CGPointZero
+        return CGPoint.zero
     }
-    public func interpolationSprings<T : FAAnimatable>(toValue : T, initialVelocity : Any, angularFrequency : CGFloat, dampingRatio : CGFloat) -> Dictionary<String, FASpring> {
+    public func interpolationSprings<T : FAAnimatable>(_ toValue : T, initialVelocity : Any, angularFrequency : CGFloat, dampingRatio : CGFloat) -> Dictionary<String, FASpring> {
         var springs = Dictionary<String, FASpring>()
         
         if let startingVelocity = initialVelocity as? CGFloat {
@@ -48,11 +48,11 @@ extension CGFloat : FAAnimatable {
         return springs
     }
     
-    public func interpolatedSpringValue<T : FAAnimatable>(toValue : T, springs : Dictionary<String, FASpring>, deltaTime : CGFloat) -> AnyObject {
+    public func interpolatedSpringValue<T : FAAnimatable>(_ toValue : T, springs : Dictionary<String, FASpring>, deltaTime : CGFloat) -> AnyObject {
         return springs[SpringAnimationKey.CGFloat]!.updatedValue(deltaTime).valueRepresentation()
     }
     
     public func valueRepresentation() -> AnyObject {
-        return NSNumber(float: Float(self))
+        return NSNumber(value: Float(self))
     }
 }

@@ -15,12 +15,12 @@ import UIKit
  */
 struct AnimationConfiguration {
     
-    var primaryTimingPriority : FAPrimaryTimingPriority = .MaxTime
+    var primaryTimingPriority : FAPrimaryTimingPriority = .maxTime
     
-    var sizeFunction : FAEasing = FAEasing.OutSine
-    var positionFunction : FAEasing =  FAEasing.SpringCustom(velocity: CGPointZero, frequency: 14, ratio: 0.8)
-    var alphaFunction : FAEasing = FAEasing.InSine
-    var transformFunction : FAEasing = FAEasing.OutBack
+    var sizeFunction : FAEasing = FAEasing.outSine
+    var positionFunction : FAEasing =  FAEasing.springCustom(velocity: CGPoint.zero, frequency: 14, ratio: 0.8)
+    var alphaFunction : FAEasing = FAEasing.inSine
+    var transformFunction : FAEasing = FAEasing.outBack
     
     var positionPrimary : Bool = true
     var sizePrimary : Bool = false
@@ -37,8 +37,8 @@ struct AnimationConfiguration {
     
     var enableSecondaryView  : Bool = false
     
-    static func titleForFunction(function : FAEasing) -> String {
-        return functionTypes[functions.indexOf(function)!]
+    static func titleForFunction(_ function : FAEasing) -> String {
+        return functionTypes[functions.index(of: function)!]
     }
 }
 
@@ -64,9 +64,9 @@ struct AnimationKeys {
     static let SecondaryAnimationKey    = "SecondaryAnimationKey"
 }
 
-let screenBounds = UIScreen.mainScreen().bounds
-let openConfigFrame = CGRectMake(20, 20, screenBounds.width - 40, screenBounds.height - 40)
-let closedConfigFrame = CGRectMake(20, screenBounds.height + 20, screenBounds.width - 40, screenBounds.height - 40)
+let screenBounds = UIScreen.main().bounds
+let openConfigFrame = CGRect(x: 20, y: 20, width: screenBounds.width - 40, height: screenBounds.height - 40)
+let closedConfigFrame = CGRect(x: 20, y: screenBounds.height + 20, width: screenBounds.width - 40, height: screenBounds.height - 40)
 
 extension ViewController {
     
@@ -77,14 +77,14 @@ extension ViewController {
         
         registerAnimation(onView : configView, forKey : AnimationKeys.ShowConfigAnimation, timingPriority: self.animConfig.primaryTimingPriority) { (animator) in
             
-            let toBounds = CGRectMake(0,0, openConfigFrame.width, openConfigFrame.height)
-            let toPosition = CGPointMake(openConfigFrame.midX, openConfigFrame.midY)
+            let toBounds = CGRect(x: 0,y: 0, width: openConfigFrame.width, height: openConfigFrame.height)
+            let toPosition = CGPoint(x: openConfigFrame.midX, y: openConfigFrame.midY)
             
-            animator.bounds(toBounds).duration(0.8).easing(.OutExponential)
-            animator.position(toPosition).duration(0.8).easing(.OutExponential).primary(true)
+            animator.bounds(toBounds).duration(0.8).easing(.outExponential)
+            animator.position(toPosition).duration(0.8).easing(.outExponential).primary(true)
            
             animator.triggerOnStart(onView: self.dimmerView, animator: { (animator) in
-                animator.alpha(0.5).duration(0.8).easing(.OutExponential)
+                animator.alpha(0.5).duration(0.8).easing(.outExponential)
               //  animator.backgroundColor(UIColor.blueColor().CGColor).duration(0.8).easing(.Linear)
                 
             })
@@ -92,14 +92,14 @@ extension ViewController {
         
         registerAnimation(onView : configView, forKey : AnimationKeys.HideConfigAnimation, timingPriority: self.animConfig.primaryTimingPriority) { (animator) in
             
-            let toBounds = CGRectMake(0,0, closedConfigFrame.width, closedConfigFrame.height)
-            let toPosition = CGPointMake(closedConfigFrame.midX, closedConfigFrame.midY)
+            let toBounds = CGRect(x: 0,y: 0, width: closedConfigFrame.width, height: closedConfigFrame.height)
+            let toPosition = CGPoint(x: closedConfigFrame.midX, y: closedConfigFrame.midY)
             
-            animator.bounds(toBounds).duration(0.8).easing(.InOutExponential)
-            animator.position(toPosition).duration(0.8).easing(.InOutExponential).primary(true)
+            animator.bounds(toBounds).duration(0.8).easing(.inOutExponential)
+            animator.position(toPosition).duration(0.8).easing(.inOutExponential).primary(true)
             
             animator.triggerOnStart(onView: self.dimmerView, animator: { (animator) in
-                animator.alpha(0.0).duration(0.8).easing(.InOutExponential)
+                animator.alpha(0.0).duration(0.8).easing(.inOutExponential)
             })
         }
     }
@@ -112,8 +112,8 @@ extension ViewController {
         configView.applyAnimation(forKey: AnimationKeys.HideConfigAnimation)
     }
     
-    func animateView(toFrame : CGRect,
-                     velocity : CGPoint = CGPointZero,
+    func animateView(_ toFrame : CGRect,
+                     velocity : CGPoint = CGPoint.zero,
                      transform : CATransform3D = CATransform3DIdentity,
                      toAlpha : CGFloat = 1.0,
                      duration : CGFloat = 0.5) {
@@ -122,12 +122,12 @@ extension ViewController {
             return
         }
         
-        let currentBounds = CGRectMake(0, 0, lastToFrame.size.width , lastToFrame.size.height)
+        let currentBounds = CGRect(x: 0, y: 0, width: lastToFrame.size.width , height: lastToFrame.size.height)
         let currentPosition = CGCSRectGetCenter(lastToFrame)
         let currentAlpha = self.dragView.alpha
         let currentTransform = self.dragView.layer.transform
         
-        let toBounds = CGRectMake(0, 0, toFrame.size.width , toFrame.size.height)
+        let toBounds = CGRect(x: 0, y: 0, width: toFrame.size.width , height: toFrame.size.height)
         let toPosition = CGCSRectGetCenter(toFrame)
         
         registerAnimation(onView : dragView, forKey : AnimationKeys.TapStageOneAnimationKey, timingPriority: self.animConfig.primaryTimingPriority) { (animator) in
@@ -168,23 +168,23 @@ extension ViewController {
         lastToFrame = toFrame
     }
     
-    func finalizePanAnimation(toFrame : CGRect,
-                              velocity : CGPoint = CGPointZero) {
+    func finalizePanAnimation(_ toFrame : CGRect,
+                              velocity : CGPoint = CGPoint.zero) {
         
-        let finalFrame = CGRectMake(0, 0, UIScreen.mainScreen().bounds.width, 240)
-        let finalBounds = CGRectMake(0, 0, toFrame.size.width, toFrame.size.height)
+        let finalFrame = CGRect(x: 0, y: 0, width: UIScreen.main().bounds.width, height: 240)
+        let finalBounds = CGRect(x: 0, y: 0, width: toFrame.size.width, height: toFrame.size.height)
         let finalCenter = CGCSRectGetCenter(finalFrame)
         
-        let currentBounds = CGRectMake(0, 0, lastToFrame.size.width , lastToFrame.size.height)
+        let currentBounds = CGRect(x: 0, y: 0, width: lastToFrame.size.width , height: lastToFrame.size.height)
         let currentPosition = CGCSRectGetCenter(lastToFrame)
         let currentAlpha = self.dragView.alpha
         let currentTransform = self.dragView.layer.transform
         
-        var easingFunction :FAEasing = .SpringDecay(velocity: velocity)
+        var easingFunction :FAEasing = .springDecay(velocity: velocity)
         
         switch animConfig.positionFunction {
-        case let .SpringCustom(_, frequency, ratio):
-            easingFunction = .SpringCustom(velocity: velocity, frequency: frequency, ratio: ratio)
+        case let .springCustom(_, frequency, ratio):
+            easingFunction = .springCustom(velocity: velocity, frequency: frequency, ratio: ratio)
         default:
             break
         }
@@ -192,7 +192,7 @@ extension ViewController {
         let duration : CGFloat = 0.5
         
         registerAnimation(onView : dragView, forKey : AnimationKeys.PanGestureKey, timingPriority: self.animConfig.primaryTimingPriority) { (animator) in
-            animator.bounds(finalBounds).duration(0.5).easing(.OutQuadratic).primary(false)
+            animator.bounds(finalBounds).duration(0.5).easing(.outQuadratic).primary(false)
             animator.position(finalCenter).duration(0.0).easing(easingFunction).primary(true)
             
             

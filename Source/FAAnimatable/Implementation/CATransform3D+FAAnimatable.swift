@@ -22,7 +22,7 @@ extension CATransform3D : FAAnimatable {
             (m31 * m31) + (m32 * m32) + (m33 * m33) + (m34 * m34) + (m41 * m41) + (m42 * m42) + (m43 * m43) + (m44 * m44))
     }
     
-    public func magnitudeToValue<T : FAAnimatable>(toValue:  T) -> CGFloat {
+    public func magnitudeToValue<T : FAAnimatable>(_ toValue:  T) -> CGFloat {
         
         var transform = CATransform3D()
         transform.m11 = (toValue as! CATransform3D).m11 - m11
@@ -48,7 +48,7 @@ extension CATransform3D : FAAnimatable {
         return transform.magnitudeValue()
     }
     
-    public func interpolatedValue<T : FAAnimatable>(toValue : T, progress : CGFloat) -> AnyObject {
+    public func interpolatedValue<T : FAAnimatable>(_ toValue : T, progress : CGFloat) -> AnyObject {
         var transform = CATransform3D()
         let finalValue = toValue as! CATransform3D
         
@@ -75,7 +75,7 @@ extension CATransform3D : FAAnimatable {
         return transform.valueRepresentation()
     }
     
-    public func interpolatedSpringValue<T : FAAnimatable>(toValue : T, springs : Dictionary<String, FASpring>, deltaTime : CGFloat) -> AnyObject {
+    public func interpolatedSpringValue<T : FAAnimatable>(_ toValue : T, springs : Dictionary<String, FASpring>, deltaTime : CGFloat) -> AnyObject {
         var transform = CATransform3D()
         
         transform.m11 = springs[SpringAnimationKey.M11]!.updatedValue(deltaTime)
@@ -101,11 +101,11 @@ extension CATransform3D : FAAnimatable {
         return transform.valueRepresentation()
     }
     
-    public func springVelocity(springs : Dictionary<String, FASpring>, deltaTime : CGFloat) -> CGPoint {
-        return CGPointZero
+    public func springVelocity(_ springs : Dictionary<String, FASpring>, deltaTime : CGFloat) -> CGPoint {
+        return CGPoint.zero
     }
     
-    public func interpolationSprings<T : FAAnimatable>(toValue : T, initialVelocity : Any, angularFrequency : CGFloat, dampingRatio : CGFloat) -> Dictionary<String, FASpring> {
+    public func interpolationSprings<T : FAAnimatable>(_ toValue : T, initialVelocity : Any, angularFrequency : CGFloat, dampingRatio : CGFloat) -> Dictionary<String, FASpring> {
         
         var springs = Dictionary<String, FASpring>()
         
@@ -192,7 +192,7 @@ extension CATransform3D : FAAnimatable {
     }
 
     public func valueRepresentation() -> AnyObject {
-        return NSValue(CATransform3D :  self)
+        return NSValue(caTransform3D :  self)
     }
 }
 

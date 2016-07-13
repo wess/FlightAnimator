@@ -10,19 +10,20 @@
 import Foundation
 import UIKit
 
+var executed = false
 extension CALayer {
     
     final public class func swizzleAddAnimation() {
         struct Static {
-            static var token: dispatch_once_t = 0
+            static var token: Int = 0
         }
         
         if self !== CALayer.self {
             return
         }
-        
-        dispatch_once(&Static.token) {
-            let originalSelector = #selector(CALayer.addAnimation(_:forKey:))
+        if executed == false {
+        //Dispatch.once(token : token) {
+            let originalSelector = #selector(CALayer.add(_:forKey:))
             let swizzledSelector = #selector(CALayer.FA_addAnimation(_:forKey:))
             
             let originalMethod = class_getInstanceMethod(self, originalSelector)
@@ -35,45 +36,47 @@ extension CALayer {
             } else {
                 method_exchangeImplementations(originalMethod, swizzledMethod);
             }
+            
+            executed = true
         }
     }
     
-    internal func FA_addAnimation(anim: CAAnimation, forKey key: String?) {
+    internal func FA_addAnimation(_ anim: CAAnimation, forKey key: String?) {
         if let animation = anim as? FAAnimationGroup {
             animation.weakLayer = self
             animation.animationKey = key
-            animation.startTime = self.convertTime(CACurrentMediaTime(), fromLayer: nil)
-            animation.synchronizeAnimationGroup((self.animationForKey(key!) as? FAAnimationGroup))
+            animation.startTime = self.convertTime(CACurrentMediaTime(), from: nil)
+            animation.synchronizeAnimationGroup((self.animation(forKey: key!) as? FAAnimationGroup))
         }
 
         removeAllAnimations()
         FA_addAnimation(anim, forKey: key)
     }
 
-    final public func anyValueForKeyPath(keyPath: String) -> Any? {
-        if let currentFromValue = self.valueForKeyPath(keyPath) {
+    final public func anyValueForKeyPath(_ keyPath: String) -> Any? {
+        if let currentFromValue = self.value(forKeyPath: keyPath) {
             
             if let value = typeCastCGColor(currentFromValue) {
                 return value
             }
     
-            let type = String.fromCString(currentFromValue.objCType) ?? ""
+            let type = String(cString: currentFromValue.objCType) ?? ""
             
             if type.hasPrefix("{CGPoint") {
-                return currentFromValue.CGPointValue!
+                return currentFromValue.cgPointValue!
             } else if type.hasPrefix("{CGSize") {
-                return currentFromValue.CGSizeValue!
+                return currentFromValue.cgSizeValue!
             } else if type.hasPrefix("{CGRect") {
-                return currentFromValue.CGRectValue!
+                return currentFromValue.cgRectValue!
             } else if type.hasPrefix("{CATransform3D") {
-                return currentFromValue.CATransform3DValue!
+                return currentFromValue.caTransform3DValue!
             }
             else {
                 return currentFromValue
             }
         }
         
-        return super.valueForKeyPath(keyPath)
+        return super.value(forKeyPath: keyPath)
     }
     
     final public func owningView() -> UIView? {
@@ -85,11 +88,11 @@ extension CALayer {
     }
 }
 
-public func typeCastCGColor(value : Any) -> CGColor? {
+public func typeCastCGColor(_ value : Any) -> CGColor? {
     if let currentValue = value as? AnyObject {
         //TODO: There appears to be no way of unwrapping a CGColor by type casting
         //Fix when the following bug is fixed https://bugs.swift.org/browse/SR-1612
-        if CFGetTypeID(currentValue) == CGColorGetTypeID() {
+        if CFGetTypeID(currentValue) == CGColor.typeID {
             return (currentValue as! CGColor)
         }
     }

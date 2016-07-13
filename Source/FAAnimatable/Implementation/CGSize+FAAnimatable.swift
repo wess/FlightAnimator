@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 
 public func ==(lhs:CGSize, rhs:CGSize) -> Bool {
-    return  CGSizeEqualToSize(lhs, rhs)
+    return  lhs.equalTo(rhs)
 }
 
 extension CGSize : FAAnimatable {
@@ -21,32 +21,32 @@ extension CGSize : FAAnimatable {
         return sqrt((width * width) + (height * height))
     }
     
-    public func magnitudeToValue<T : FAAnimatable>(toValue:  T) -> CGFloat {
-        return CGSizeMake((toValue as! CGSize).width - width, (toValue as! CGSize).height - height).magnitudeValue()
+    public func magnitudeToValue<T : FAAnimatable>(_ toValue:  T) -> CGFloat {
+        return CGSize(width: (toValue as! CGSize).width - width, height: (toValue as! CGSize).height - height).magnitudeValue()
     }
     
-    public func interpolatedValue<T : FAAnimatable>(toValue : T, progress : CGFloat) -> AnyObject {
+    public func interpolatedValue<T : FAAnimatable>(_ toValue : T, progress : CGFloat) -> AnyObject {
         let width : CGFloat = ceil(interpolateCGFloat(self.width, end: (toValue as! CGSize).width, progress: progress))
         let height : CGFloat = ceil(interpolateCGFloat(self.height, end: (toValue as! CGSize).height, progress: progress))
-        return  CGSizeMake(width, height).valueRepresentation()
+        return  CGSize(width: width, height: height).valueRepresentation()
     }
     
-    public func interpolatedSpringValue<T : FAAnimatable>(toValue : T, springs : Dictionary<String, FASpring>, deltaTime : CGFloat) -> AnyObject {
-        let size = CGSizeMake(springs[SpringAnimationKey.CGSizeWidth]!.updatedValue(deltaTime),
-                              springs[SpringAnimationKey.CGSizeHeight]!.updatedValue(deltaTime))
+    public func interpolatedSpringValue<T : FAAnimatable>(_ toValue : T, springs : Dictionary<String, FASpring>, deltaTime : CGFloat) -> AnyObject {
+        let size = CGSize(width: springs[SpringAnimationKey.CGSizeWidth]!.updatedValue(deltaTime),
+                              height: springs[SpringAnimationKey.CGSizeHeight]!.updatedValue(deltaTime))
         return size.valueRepresentation()
     }
     
-    public func springVelocity(springs : Dictionary<String, FASpring>, deltaTime : CGFloat) -> CGPoint {
+    public func springVelocity(_ springs : Dictionary<String, FASpring>, deltaTime : CGFloat) -> CGPoint {
         if let currentWidthVelocity = springs[SpringAnimationKey.CGSizeWidth]?.velocity(deltaTime),
             let currentHeightVelocity = springs[SpringAnimationKey.CGSizeHeight]?.velocity(deltaTime) {
-                return  CGPointMake(currentWidthVelocity, currentHeightVelocity)
+                return  CGPoint(x: currentWidthVelocity, y: currentHeightVelocity)
         }
         
-        return CGPointZero
+        return CGPoint.zero
     }
     
-    public func interpolationSprings<T : FAAnimatable>(toValue : T, initialVelocity : Any, angularFrequency : CGFloat, dampingRatio : CGFloat) -> Dictionary<String, FASpring> {
+    public func interpolationSprings<T : FAAnimatable>(_ toValue : T, initialVelocity : Any, angularFrequency : CGFloat, dampingRatio : CGFloat) -> Dictionary<String, FASpring> {
         
         var springs = Dictionary<String, FASpring>()
     
@@ -62,6 +62,6 @@ extension CGSize : FAAnimatable {
     }
     
     public func valueRepresentation() -> AnyObject {
-        return NSValue(CGSize :  self)
+        return NSValue(cgSize :  self)
     }
 }

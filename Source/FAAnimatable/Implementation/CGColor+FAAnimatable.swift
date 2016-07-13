@@ -11,7 +11,7 @@ import Foundation
 import UIKit
 
 public func ==(lhs:CGColor, rhs:CGColor) -> Bool {
-    return CGColorEqualToColor(lhs, rhs)
+    return lhs.equalTo(rhs)
 }
 
 extension CGColor : FAAnimatable {
@@ -22,68 +22,68 @@ extension CGColor : FAAnimatable {
         
         var red: CGFloat = 0, green: CGFloat = 0, blue: CGFloat = 0, alphaRGB: CGFloat = 0
        
-        if  UIColor(CGColor: self).getRed(&red, green: &green, blue: &blue, alpha: &alphaRGB) {
+        if  UIColor(cgColor: self).getRed(&red, green: &green, blue: &blue, alpha: &alphaRGB) {
             return sqrt((red * red) + (green * green) +
                 ((blue * blue) + (alphaRGB * alphaRGB)))
         }
         
         var hue: CGFloat = 0, saturation: CGFloat = 0, brightness: CGFloat = 0, alphaHSB: CGFloat = 0
 
-        if UIColor(CGColor:self).getHue(&hue, saturation: &saturation, brightness: &brightness, alpha: &alphaHSB) {
+        if UIColor(cgColor:self).getHue(&hue, saturation: &saturation, brightness: &brightness, alpha: &alphaHSB) {
             return sqrt((hue * hue) + (saturation * saturation) +
                 ((brightness * brightness) + (alphaHSB * alphaHSB)))
         }
         
         var white: CGFloat = 0, alphaWhite: CGFloat = 0
       
-        UIColor(CGColor:self).getWhite(&white, alpha: &alphaWhite)
+        UIColor(cgColor:self).getWhite(&white, alpha: &alphaWhite)
         
         return sqrt((white * white) + (alphaWhite * alphaWhite))
     }
     
-    public func magnitudeToValue<T : FAAnimatable>(toValue:  T) -> CGFloat {
+    public func magnitudeToValue<T : FAAnimatable>(_ toValue:  T) -> CGFloat {
         
         var red: CGFloat = 0, green: CGFloat = 0, blue: CGFloat = 0, alphaRGB: CGFloat = 0
         var toRed: CGFloat = 0, toGreen: CGFloat = 0, toBlue: CGFloat = 0, toAlphaRGB: CGFloat = 0
         
-        if  UIColor(CGColor: self).getRed(&red, green: &green, blue: &blue, alpha: &alphaRGB) &&
-            UIColor(CGColor:(toValue as! CGColor)).getRed(&toRed, green: &toGreen, blue: &toBlue, alpha: &toAlphaRGB) {
+        if  UIColor(cgColor: self).getRed(&red, green: &green, blue: &blue, alpha: &alphaRGB) &&
+            UIColor(cgColor:(toValue as! CGColor)).getRed(&toRed, green: &toGreen, blue: &toBlue, alpha: &toAlphaRGB) {
             
             return UIColor(red : red - toRed,
                            green : green - toGreen,
                            blue : blue - toBlue,
-                           alpha : alphaRGB - toAlphaRGB).CGColor.magnitudeValue()
+                           alpha : alphaRGB - toAlphaRGB).cgColor.magnitudeValue()
         }
         
         var hue: CGFloat = 0, saturation: CGFloat = 0, brightness: CGFloat = 0, alphaHSB: CGFloat = 0
         var toHue: CGFloat = 0, toSaturation: CGFloat = 0, toBrightness: CGFloat = 0, toAlphaHSB: CGFloat = 0
         
-        if UIColor(CGColor:self).getHue(&hue, saturation: &saturation, brightness: &brightness, alpha: &alphaHSB) &&
-           UIColor(CGColor:(toValue as! CGColor)).getHue(&toHue, saturation: &toSaturation, brightness: &toBrightness, alpha: &toAlphaHSB) {
+        if UIColor(cgColor:self).getHue(&hue, saturation: &saturation, brightness: &brightness, alpha: &alphaHSB) &&
+           UIColor(cgColor:(toValue as! CGColor)).getHue(&toHue, saturation: &toSaturation, brightness: &toBrightness, alpha: &toAlphaHSB) {
             
             return UIColor(hue : hue - toHue,
                            saturation : saturation - toSaturation,
                            brightness : brightness - toBrightness,
-                           alpha : alphaHSB - toAlphaHSB).CGColor.magnitudeValue()
+                           alpha : alphaHSB - toAlphaHSB).cgColor.magnitudeValue()
         }
         
         var white: CGFloat = 0, alphaWhite: CGFloat = 0
         var toWhite: CGFloat = 0, toAlphaWhite: CGFloat = 0
         
-        UIColor(CGColor:self).getWhite(&white, alpha: &alphaWhite)
-        UIColor(CGColor:(toValue as! CGColor)).getWhite(&toWhite, alpha: &toAlphaWhite)
+        UIColor(cgColor:self).getWhite(&white, alpha: &alphaWhite)
+        UIColor(cgColor:(toValue as! CGColor)).getWhite(&toWhite, alpha: &toAlphaWhite)
         
         return UIColor(white: white - toWhite,
-                       alpha: alphaWhite - toAlphaWhite).CGColor.magnitudeValue()
+                       alpha: alphaWhite - toAlphaWhite).cgColor.magnitudeValue()
     }
     
-    public func interpolatedValue<T : FAAnimatable>(toValue : T, progress : CGFloat) -> AnyObject {
+    public func interpolatedValue<T : FAAnimatable>(_ toValue : T, progress : CGFloat) -> AnyObject {
         
         var red: CGFloat = 0, green: CGFloat = 0, blue: CGFloat = 0, alphaRGB: CGFloat = 0
         var toRed: CGFloat = 0, toGreen: CGFloat = 0, toBlue: CGFloat = 0, toAlphaRGB: CGFloat = 0
         
-        if  UIColor(CGColor: self).getRed(&red, green: &green, blue: &blue, alpha: &alphaRGB) &&
-            UIColor(CGColor:(toValue as! CGColor)).getRed(&toRed, green: &toGreen, blue: &toBlue, alpha: &toAlphaRGB) {
+        if  UIColor(cgColor: self).getRed(&red, green: &green, blue: &blue, alpha: &alphaRGB) &&
+            UIColor(cgColor:(toValue as! CGColor)).getRed(&toRed, green: &toGreen, blue: &toBlue, alpha: &toAlphaRGB) {
             
             let interpolatedRed = interpolateCGFloat(red, end: toRed, progress: progress);
             let interpolatedGreen = interpolateCGFloat(green, end: toGreen, progress: progress);
@@ -93,14 +93,14 @@ extension CGColor : FAAnimatable {
             return UIColor(red : interpolatedRed,
                            green : interpolatedGreen,
                            blue : interpolatedBlue,
-                           alpha : interpolatedAlpha).CGColor
+                           alpha : interpolatedAlpha).cgColor
         }
         
         var hue: CGFloat = 0, saturation: CGFloat = 0, brightness: CGFloat = 0, alphaHSB: CGFloat = 0
         var toHue: CGFloat = 0, toSaturation: CGFloat = 0, finalbrightness: CGFloat = 0, toAlphaHSB: CGFloat = 0
         
-        if UIColor(CGColor:self).getHue(&hue, saturation: &saturation, brightness: &brightness, alpha: &alphaHSB) &&
-           UIColor(CGColor:(toValue as! CGColor)).getHue(&toHue, saturation: &toSaturation, brightness: &finalbrightness, alpha: &toAlphaHSB) {
+        if UIColor(cgColor:self).getHue(&hue, saturation: &saturation, brightness: &brightness, alpha: &alphaHSB) &&
+           UIColor(cgColor:(toValue as! CGColor)).getHue(&toHue, saturation: &toSaturation, brightness: &finalbrightness, alpha: &toAlphaHSB) {
             
             let interpolatedHue         = interpolateCGFloat(hue, end: toHue, progress: progress)
             let interpolatedSaturation  = interpolateCGFloat(saturation, end: toSaturation, progress: progress)
@@ -110,81 +110,81 @@ extension CGColor : FAAnimatable {
             return UIColor(hue : interpolatedHue,
                            saturation : interpolatedSaturation,
                            brightness : interpolatedBrightness,
-                           alpha : interpolatedHSBAlpha).CGColor
+                           alpha : interpolatedHSBAlpha).cgColor
         }
         
         var white: CGFloat = 0, alphaWhite: CGFloat = 0
         var toWhite: CGFloat = 0, toAlphaWhite: CGFloat = 0
         
-        UIColor(CGColor:self).getWhite(&white, alpha: &alphaWhite)
-        UIColor(CGColor:(toValue as! CGColor)).getWhite(&toWhite, alpha: &toAlphaWhite)
+        UIColor(cgColor:self).getWhite(&white, alpha: &alphaWhite)
+        UIColor(cgColor:(toValue as! CGColor)).getWhite(&toWhite, alpha: &toAlphaWhite)
         
         let interpolatedWhite  = interpolateCGFloat(white, end: toWhite, progress: progress)
         let interpolatedAlpha  = interpolateCGFloat(alphaWhite, end: toAlphaWhite, progress: progress)
         
-        return UIColor(white: interpolatedWhite, alpha: interpolatedAlpha).CGColor
+        return UIColor(white: interpolatedWhite, alpha: interpolatedAlpha).cgColor
     }
     
-    public func interpolatedSpringValue<T : FAAnimatable>(toValue : T, springs : Dictionary<String, FASpring>, deltaTime : CGFloat) -> AnyObject {
+    public func interpolatedSpringValue<T : FAAnimatable>(_ toValue : T, springs : Dictionary<String, FASpring>, deltaTime : CGFloat) -> AnyObject {
        
         var red: CGFloat = 0, green: CGFloat = 0, blue: CGFloat = 0, alphaRGB: CGFloat = 0
         var toRed: CGFloat = 0, toGreen: CGFloat = 0, toBlue: CGFloat = 0, toAlphaRGB: CGFloat = 0
         
-        if  UIColor(CGColor: self).getRed(&red, green: &green, blue: &blue, alpha: &alphaRGB) &&
-            UIColor(CGColor:(toValue as! CGColor)).getRed(&toRed, green: &toGreen, blue: &toBlue, alpha: &toAlphaRGB) {
+        if  UIColor(cgColor: self).getRed(&red, green: &green, blue: &blue, alpha: &alphaRGB) &&
+            UIColor(cgColor:(toValue as! CGColor)).getRed(&toRed, green: &toGreen, blue: &toBlue, alpha: &toAlphaRGB) {
          
             return UIColor(red : springs[SpringAnimationKey.CGColorRed]!.updatedValue(deltaTime),
                            green : springs[SpringAnimationKey.CGColorGreen]!.updatedValue(deltaTime),
                            blue : springs[SpringAnimationKey.CGColorBlue]!.updatedValue(deltaTime),
-                           alpha : springs[SpringAnimationKey.CGColorRGBAlpha]!.updatedValue(deltaTime)).CGColor
+                           alpha : springs[SpringAnimationKey.CGColorRGBAlpha]!.updatedValue(deltaTime)).cgColor
         }
         
         var hue: CGFloat = 0, saturation: CGFloat = 0, brightness: CGFloat = 0, alphaHSB: CGFloat = 0
         var toHue: CGFloat = 0, toSaturation: CGFloat = 0, finalbrightness: CGFloat = 0, toAlphaHSB: CGFloat = 0
         
-        if UIColor(CGColor:self).getHue(&hue, saturation: &saturation, brightness: &brightness, alpha: &alphaHSB) &&
-            UIColor(CGColor:(toValue as! CGColor)).getHue(&toHue, saturation: &toSaturation, brightness: &finalbrightness, alpha: &toAlphaHSB) {
+        if UIColor(cgColor:self).getHue(&hue, saturation: &saturation, brightness: &brightness, alpha: &alphaHSB) &&
+            UIColor(cgColor:(toValue as! CGColor)).getHue(&toHue, saturation: &toSaturation, brightness: &finalbrightness, alpha: &toAlphaHSB) {
 
             
             return UIColor(red : springs[SpringAnimationKey.CGColorHue]!.updatedValue(deltaTime),
                            green : springs[SpringAnimationKey.CGColorSaturation]!.updatedValue(deltaTime),
                            blue : springs[SpringAnimationKey.CGColorBrightness]!.updatedValue(deltaTime),
-                           alpha : springs[SpringAnimationKey.CGColorHSBAlpha]!.updatedValue(deltaTime)).CGColor
+                           alpha : springs[SpringAnimationKey.CGColorHSBAlpha]!.updatedValue(deltaTime)).cgColor
         }
         
         return UIColor(white: springs[SpringAnimationKey.CGColorWhite]!.updatedValue(deltaTime),
-                       alpha: springs[SpringAnimationKey.CGColorWhiteAlpha]!.updatedValue(deltaTime)).CGColor
+                       alpha: springs[SpringAnimationKey.CGColorWhiteAlpha]!.updatedValue(deltaTime)).cgColor
     
     }
     
-    public func springVelocity(springs : Dictionary<String, FASpring>, deltaTime : CGFloat) -> CGPoint {
+    public func springVelocity(_ springs : Dictionary<String, FASpring>, deltaTime : CGFloat) -> CGPoint {
         
         if  let currentRVelocity = springs[SpringAnimationKey.CGColorRed]?.velocity(deltaTime),
             let currentGVelocity = springs[SpringAnimationKey.CGColorGreen]?.velocity(deltaTime)  {
             
-            return CGPointMake(currentRVelocity, currentGVelocity)
+            return CGPoint(x: currentRVelocity, y: currentGVelocity)
         }
         
         if  let currentHVelocity = springs[SpringAnimationKey.CGColorRed]?.velocity(deltaTime),
             let currentSVelocity = springs[SpringAnimationKey.CGColorGreen]?.velocity(deltaTime)  {
             
-            return CGPointMake(currentHVelocity, currentSVelocity)
+            return CGPoint(x: currentHVelocity, y: currentSVelocity)
         }
         
-        return CGPointMake(springs[SpringAnimationKey.CGColorWhite]!.updatedValue(deltaTime),
-                           springs[SpringAnimationKey.CGColorWhiteAlpha]!.updatedValue(deltaTime))
+        return CGPoint(x: springs[SpringAnimationKey.CGColorWhite]!.updatedValue(deltaTime),
+                           y: springs[SpringAnimationKey.CGColorWhiteAlpha]!.updatedValue(deltaTime))
     
     }
     
-    public func interpolationSprings<T : FAAnimatable>(toValue : T, initialVelocity : Any, angularFrequency : CGFloat, dampingRatio : CGFloat) -> Dictionary<String, FASpring> {
+    public func interpolationSprings<T : FAAnimatable>(_ toValue : T, initialVelocity : Any, angularFrequency : CGFloat, dampingRatio : CGFloat) -> Dictionary<String, FASpring> {
     
         var springs = Dictionary<String, FASpring>()
     
         var red: CGFloat = 0, green: CGFloat = 0, blue: CGFloat = 0, alphaRGB: CGFloat = 0
         var toRed: CGFloat = 0, toGreen: CGFloat = 0, toBlue: CGFloat = 0, toAlphaRGB: CGFloat = 0
         
-        if  UIColor(CGColor: self).getRed(&red, green: &green, blue: &blue, alpha: &alphaRGB) &&
-            UIColor(CGColor:(toValue as! CGColor)).getRed(&toRed, green: &toGreen, blue: &toBlue, alpha: &toAlphaRGB) {
+        if  UIColor(cgColor: self).getRed(&red, green: &green, blue: &blue, alpha: &alphaRGB) &&
+            UIColor(cgColor:(toValue as! CGColor)).getRed(&toRed, green: &toGreen, blue: &toBlue, alpha: &toAlphaRGB) {
             
            if let startingVelocity = initialVelocity as? CGPoint {
                 springs[SpringAnimationKey.CGColorRed] = red.interpolationSprings(toRed, initialVelocity : startingVelocity.x, angularFrequency : angularFrequency, dampingRatio : dampingRatio)[SpringAnimationKey.CGFloat]
@@ -202,8 +202,8 @@ extension CGColor : FAAnimatable {
         var hue: CGFloat = 0, saturation: CGFloat = 0, brightness: CGFloat = 0, alphaHSB: CGFloat = 0
         var toHue: CGFloat = 0, toSaturation: CGFloat = 0, toBrightness : CGFloat = 0, toAlphaHSB: CGFloat = 0
         
-        if UIColor(CGColor:self).getHue(&hue, saturation: &saturation, brightness: &brightness, alpha: &alphaHSB) &&
-            UIColor(CGColor:(toValue as! CGColor)).getHue(&toHue, saturation: &toSaturation, brightness: &toBrightness, alpha: &toAlphaHSB) {
+        if UIColor(cgColor:self).getHue(&hue, saturation: &saturation, brightness: &brightness, alpha: &alphaHSB) &&
+            UIColor(cgColor:(toValue as! CGColor)).getHue(&toHue, saturation: &toSaturation, brightness: &toBrightness, alpha: &toAlphaHSB) {
             
             
             if let startingVelocity = initialVelocity as? CGPoint {
@@ -223,8 +223,8 @@ extension CGColor : FAAnimatable {
         var white: CGFloat = 0, alphaWhite: CGFloat = 0
         var toWhite: CGFloat = 0, toAlphaWhite: CGFloat = 0
         
-        UIColor(CGColor:self).getWhite(&white, alpha: &alphaWhite)
-        UIColor(CGColor:(toValue as! CGColor)).getWhite(&toWhite, alpha: &toAlphaWhite)
+        UIColor(cgColor:self).getWhite(&white, alpha: &alphaWhite)
+        UIColor(cgColor:(toValue as! CGColor)).getWhite(&toWhite, alpha: &toAlphaWhite)
         
         if let startingVelocity = initialVelocity as? CGPoint {
             springs[SpringAnimationKey.CGColorWhite] = white.interpolationSprings(toWhite, initialVelocity : startingVelocity.x, angularFrequency : angularFrequency, dampingRatio : dampingRatio)[SpringAnimationKey.CGFloat]
