@@ -9,15 +9,7 @@
 import Foundation
 import UIKit
 
-internal class AnimationTrigger : Equatable {
-    var isTimedBased = true
-    var triggerProgessValue : CGFloat?
-    var animationKey : NSString?
-    weak var animatedView : UIView?
-}
-
-
-public class FAAnimationMaker {
+public class FlightAnimator {
     
     internal weak var associatedView : UIView?
     internal var animationKey : String?
@@ -45,8 +37,7 @@ public class FAAnimationMaker {
         
        
         let newGroup = FAAnimationGroup()
-        newGroup.animationKey = animationKey
-        newGroup.weakLayer = associatedView?.layer
+        newGroup.configureAnimationGroup(withLayer: associatedView?.layer, animationKey: animationKey)
         newGroup.primaryTimingPriority = primaryTimingPriority
         
         associatedView!.cachedAnimations![NSString(string: animationKey!)] = newGroup
@@ -127,7 +118,7 @@ public class PropertyAnimationConfig  {
         }
         
         if let animations = animationGroup.animations {
-            let animation = (animations as! [FAAnimation]).filter ({ $0.keyPath == self.keyPath }).first
+            let animation = (animations as! [FABasicAnimation]).filter ({ $0.keyPath == self.keyPath }).first
             
             if let animation = animation {
                 animation.easingFunction = easingCurve
@@ -147,8 +138,9 @@ public class PropertyAnimationConfig  {
                 }
                 
                 animation.duration = Double(duration)
-                animation.setAnimationAsPrimary(primary)
-                animationGroup.weakLayer = associatedView?.layer
+                animation.isPrimary = primary
+                
+                animationGroup.configureAnimationGroup(withLayer: associatedView?.layer, animationKey: animationKey)
                 animationGroup.animations!.append(animation)
                 
                 associatedView!.cachedAnimations![NSString(string: animationKey!)] = animationGroup
@@ -157,7 +149,7 @@ public class PropertyAnimationConfig  {
         }
         
         
-        let animation = FAAnimation(keyPath: keyPath)
+        let animation = FABasicAnimation(keyPath: keyPath)
         animation.easingFunction = easingCurve
        
         if let currentValue = toValue as? CGPoint {
@@ -175,8 +167,8 @@ public class PropertyAnimationConfig  {
         }
         
         animation.duration = Double(duration)
-        animation.setAnimationAsPrimary(primary)
-        animationGroup.weakLayer = associatedView?.layer
+        animation.isPrimary = primary
+        animationGroup.configureAnimationGroup(withLayer: associatedView?.layer, animationKey: animationKey)
         animationGroup.animations!.append(animation)
         
         associatedView!.cachedAnimations![NSString(string: animationKey!)] = animationGroup

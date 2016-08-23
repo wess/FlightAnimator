@@ -13,9 +13,9 @@ private struct FAAssociatedKey {
     static var layoutConfigurations = "layoutConfigurations"
 }
 
-extension UIView {
+public extension UIView {
     
-    internal var cachedAnimations: [NSString : FAAnimationGroup]? {
+    var cachedAnimations: [NSString : FAAnimationGroup]? {
         get {
             return fa_getAssociatedObject(self, associativeKey: &FAAssociatedKey.layoutConfigurations)
         }
@@ -26,7 +26,7 @@ extension UIView {
         }
     }
     
-    private func fa_setAssociatedObject<T>(object: AnyObject,
+    func fa_setAssociatedObject<T>(object: AnyObject,
                                      value: T,
                                      associativeKey: UnsafePointer<Void>,
                                      policy: objc_AssociationPolicy) {
@@ -38,7 +38,7 @@ extension UIView {
         }
     }
     
-    private func fa_getAssociatedObject<T>(object: AnyObject, associativeKey: UnsafePointer<Void>) -> T? {
+    func fa_getAssociatedObject<T>(object: AnyObject, associativeKey: UnsafePointer<Void>) -> T? {
         if let v = objc_getAssociatedObject(object, associativeKey) as? T {
             return v
         } else if let v = objc_getAssociatedObject(object, associativeKey) as? ValueWrapper<T> {
@@ -47,31 +47,25 @@ extension UIView {
             return nil
         }
     }
-    
-    func applyAnimationsToSubViews(inView : UIView, forKey key: String, animated : Bool = true) {
-        for subView in inView.subviews {
-            subView.applyAnimation(forKey: key, animated: animated)
-        }
-    }
-    
-    internal func appendAnimation(animation : AnyObject, forKey key: String) {
+        
+    func appendAnimation(animation : AnyObject, forKey key: String) {
         
         if cachedAnimations == nil {
             cachedAnimations = [NSString : FAAnimationGroup]()
         }
         
-        if let newAnimation = animation as? FAAnimation {
+        if let newAnimation = animation as? FABasicAnimation {
             
             if let oldAnimation = cachedAnimations![NSString(string: key)] {
                 oldAnimation.stopTriggerTimer()
             }
             
-            
             let newAnimationGroup = FAAnimationGroup()
             newAnimationGroup.animations = [newAnimation]
             newAnimationGroup.weakLayer = layer
             cachedAnimations![NSString(string: key)] = newAnimationGroup
-        } else if let newAnimationGroup = animation as? FAAnimationGroup {
+        }
+        else if let newAnimationGroup = animation as? FAAnimationGroup {
            
             if let oldAnimation = cachedAnimations![key] {
                 oldAnimation.stopTriggerTimer()

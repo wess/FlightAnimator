@@ -36,7 +36,7 @@ alt="FlightAnimatore Demo" border="0" /></a>
 
 ##Installation
 
-* **Requirements** : XCode 7.3+, iOS 8.0+, tvOS 9.0+
+* **Requirements** : XCode 7.3+, iOS 8.0+, tvOS 9.0+, osx 10.10+
 * [Installation Instructions](/Documentation/installation.md)
 * [Release Notes](/Documentation/release_notes.md)
 

@@ -8,7 +8,7 @@
 
 import Foundation
 import UIKit
-//import FlightAnimator
+import FlightAnimator
 
 /**
  *  This is used to keep track of the settings in the configuration screen
@@ -75,7 +75,7 @@ extension ViewController {
      */
     func registerConfigViewAnimations() {
 
-        registerAnimation(onView : configView, forKey : AnimationKeys.ShowConfigAnimation, timingPriority: self.animConfig.primaryTimingPriority) {[unowned self] (animator) in
+        configView.cacheAnimation(forKey : AnimationKeys.ShowConfigAnimation, timingPriority: self.animConfig.primaryTimingPriority) {[unowned self] (animator) in
             
             let toBounds = CGRectMake(0,0, openConfigFrame.width, openConfigFrame.height)
             let toPosition = CGPointMake(openConfigFrame.midX, openConfigFrame.midY)
@@ -89,7 +89,7 @@ extension ViewController {
             })
         }
         
-        registerAnimation(onView : configView, forKey : AnimationKeys.HideConfigAnimation, timingPriority: self.animConfig.primaryTimingPriority) {[unowned self] (animator) in
+        configView.cacheAnimation(forKey : AnimationKeys.HideConfigAnimation, timingPriority: self.animConfig.primaryTimingPriority) {[unowned self] (animator) in
             
             let toBounds = CGRectMake(0,0, closedConfigFrame.width, closedConfigFrame.height)
             let toPosition = CGPointMake(closedConfigFrame.midX, closedConfigFrame.midY)
@@ -99,7 +99,7 @@ extension ViewController {
             
             animator.triggerOnStart(onView: self.dimmerView, animator: {  (animator) in
                 animator.alpha(0.0).duration(0.8).easing(.InOutExponential)
-                 animator.backgroundColor(UIColor.clearColor().CGColor).duration(0.6).easing(.Linear)
+                animator.backgroundColor(UIColor.clearColor().CGColor).duration(0.6).easing(.Linear)
             })
         }
     }
@@ -122,56 +122,64 @@ extension ViewController {
             return
         }
         
-        let currentBounds = CGRectMake(0, 0, lastToFrame.size.width , lastToFrame.size.height)
-        let currentPosition = CGCSRectGetCenter(lastToFrame)
-        let currentAlpha = self.dragView.alpha
-        let currentTransform = self.dragView.layer.transform
-        
-        let toBounds = CGRectMake(0, 0, toFrame.size.width , toFrame.size.height)
-        let toPosition = CGCSRectGetCenter(toFrame)
-        
-        registerAnimation(onView : dragView, forKey : AnimationKeys.TapStageOneAnimationKey, timingPriority: self.animConfig.primaryTimingPriority) { [weak self] (animator) in
+        dragView.animate(animConfig.primaryTimingPriority) { [weak self] (a) in
+           
+            guard let weakSelf = self else {
+                return
+            }
             
+            let config = weakSelf.animConfig
             
-            if let weakSelf = self {
+            let toBounds = CGRectMake(0, 0, toFrame.size.width , toFrame.size.height)
+            let toPosition = CGCSRectGetCenter(toFrame)
             
+            a.bounds(toBounds).duration(duration).easing(config.sizeFunction).primary(config.sizePrimary)
+            a.position(toPosition).duration(duration).easing(config.positionFunction).primary(config.positionPrimary)
+            a.alpha(toAlpha).duration(duration).easing(config.alphaFunction).primary(config.alphaPrimary)
+            a.transform(transform).duration(duration).easing(config.transformFunction).primary(config.transformPrimary)
             
-            animator.bounds(toBounds).duration(duration).easing(weakSelf.animConfig.sizeFunction).primary(weakSelf.animConfig.sizePrimary)
-            animator.position(toPosition).duration(duration).easing(weakSelf.animConfig.positionFunction).primary(weakSelf.animConfig.positionPrimary)
-            animator.alpha(toAlpha).duration(duration).easing(weakSelf.animConfig.alphaFunction).primary(weakSelf.animConfig.alphaPrimary)
-            animator.transform(transform).duration(duration).easing(weakSelf.animConfig.transformFunction).primary(weakSelf.animConfig.transformPrimary)
-            
-            if weakSelf.animConfig.enableSecondaryView {
+            if config.enableSecondaryView {
                 
-                switch weakSelf.animConfig.triggerType {
+                let currentBounds = CGRectMake(0, 0, weakSelf.lastToFrame.size.width , weakSelf.lastToFrame.size.height)
+                let currentPosition = CGCSRectGetCenter(weakSelf.lastToFrame)
+                let currentAlpha = weakSelf.dragView.alpha
+                let currentTransform = weakSelf.dragView.layer.transform
+                
+                switch config.triggerType {
                 case 1:
-                    animator.triggerAtTimeProgress(atProgress: weakSelf.animConfig.triggerProgress, onView: weakSelf.dragView2, animator: { [unowned weakSelf] (animator) in
-                        animator.bounds(currentBounds).duration(duration).easing(weakSelf.animConfig.sizeFunction).primary(weakSelf.animConfig.sizePrimary)
-                        animator.position(currentPosition).duration(duration).easing(weakSelf.animConfig.positionFunction).primary(weakSelf.animConfig.positionPrimary)
-                        animator.alpha(currentAlpha).duration(duration).easing(weakSelf.animConfig.alphaFunction).primary(weakSelf.animConfig.alphaPrimary)
-                        animator.transform(currentTransform).duration(duration).easing(weakSelf.animConfig.transformFunction).primary(weakSelf.animConfig.transformPrimary)
+                    a.triggerAtTimeProgress(atProgress: config.triggerProgress,
+                                            onView: weakSelf.dragView2,
+                                            animator: { (a) in
+                       
+                        a.bounds(currentBounds).duration(duration).easing(config.sizeFunction).primary(config.sizePrimary)
+                        a.position(currentPosition).duration(duration).easing(config.positionFunction).primary(config.positionPrimary)
+                        a.alpha(currentAlpha).duration(duration).easing(config.alphaFunction).primary(config.alphaPrimary)
+                        a.transform(currentTransform).duration(duration).easing(config.transformFunction).primary(config.transformPrimary)
+                   
                     })
                 case 2:
-                    animator.triggerAtValueProgress(atProgress : weakSelf.animConfig.triggerProgress, onView: weakSelf.dragView2, animator: {[unowned weakSelf]  (animator) in
-                        animator.bounds(currentBounds).duration(duration).easing(weakSelf.animConfig.sizeFunction).primary(weakSelf.animConfig.sizePrimary)
-                        animator.position(currentPosition).duration(duration).easing(weakSelf.animConfig.positionFunction).primary(weakSelf.animConfig.positionPrimary)
-                        animator.alpha(currentAlpha).duration(duration).easing(weakSelf.animConfig.alphaFunction).primary(weakSelf.animConfig.alphaPrimary)
-                        animator.transform(currentTransform).duration(duration).easing(weakSelf.animConfig.transformFunction).primary(weakSelf.animConfig.transformPrimary)
+                    a.triggerAtValueProgress(atProgress : config.triggerProgress,
+                                             onView: weakSelf.dragView2,
+                                             animator: { (a) in
+                                                
+                        a.bounds(currentBounds).duration(duration).easing(config.sizeFunction).primary(config.sizePrimary)
+                        a.position(currentPosition).duration(duration).easing(config.positionFunction).primary(config.positionPrimary)
+                        a.alpha(currentAlpha).duration(duration).easing(config.alphaFunction).primary(config.alphaPrimary)
+                        a.transform(currentTransform).duration(duration).easing(config.transformFunction).primary(config.transformPrimary)
                     })
                 default:
-                    animator.triggerOnStart(onView: weakSelf.dragView2, animator: {[unowned weakSelf]  (animator) in
-                        animator.bounds(currentBounds).duration(duration).easing(weakSelf.animConfig.sizeFunction).primary(weakSelf.animConfig.sizePrimary)
-                        animator.position(currentPosition).duration(duration).easing(weakSelf.animConfig.positionFunction).primary(weakSelf.animConfig.positionPrimary)
-                        animator.alpha(currentAlpha).duration(duration).easing(weakSelf.animConfig.alphaFunction).primary(weakSelf.animConfig.alphaPrimary)
-                        animator.transform(currentTransform).duration(duration).easing(weakSelf.animConfig.transformFunction).primary(weakSelf.animConfig.transformPrimary)
+                    a.triggerOnStart(onView: weakSelf.dragView2,
+                                     animator: { (a) in
+                                        
+                        a.bounds(currentBounds).duration(duration).easing(config.sizeFunction).primary(config.sizePrimary)
+                        a.position(currentPosition).duration(duration).easing(config.positionFunction).primary(config.positionPrimary)
+                        a.alpha(currentAlpha).duration(duration).easing(config.alphaFunction).primary(config.alphaPrimary)
+                        a.transform(currentTransform).duration(duration).easing(config.transformFunction).primary(config.transformPrimary)
                     })
                 }
             }
-                
-            }
         }
         
-        dragView.applyAnimation(forKey: AnimationKeys.TapStageOneAnimationKey)
         lastToFrame = toFrame
     }
     
@@ -201,7 +209,7 @@ extension ViewController {
 
         let duration : CGFloat = 0.5
         
-        registerAnimation(onView : dragView, forKey : AnimationKeys.PanGestureKey, timingPriority: self.animConfig.primaryTimingPriority) {[unowned self]  (animator) in
+        dragView.cacheAnimation(forKey : AnimationKeys.PanGestureKey, timingPriority: self.animConfig.primaryTimingPriority) {[unowned self]  (animator) in
             animator.bounds(finalBounds).duration(0.5).easing(.OutQuadratic).primary(false)
             animator.position(finalCenter).duration(0.6).easing(easingFunction).primary(true)
             

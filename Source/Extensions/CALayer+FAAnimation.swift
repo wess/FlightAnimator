@@ -41,33 +41,26 @@ extension CALayer {
     }
     
     internal func FA_addAnimation(anim: CAAnimation, forKey key: String?) {
-        if let animation = anim as? FAAnimationGroup {
-            animation.stopTriggerTimer()
-            animation.weakLayer = self
-            animation.animationKey = key
-            animation.startTime = self.convertTime(CACurrentMediaTime(), fromLayer: nil)
-            
-            if let oldAnimation = self.animationForKey(key!) as? FAAnimationGroup{
-                self.removeAnimationForKey(key!)
-                oldAnimation.stopTriggerTimer()
-                animation.synchronizeAnimationGroup(oldAnimation)
-            } else {
-                self.removeAnimationForKey(key!)
-                animation.synchronizeAnimationGroup(nil)                
-            }
+        
+        guard let animation = anim as? FAAnimationGroup else {
+            FA_addAnimation(anim, forKey: key)
+            return
         }
-
+        
+        animation.synchronizeAnimationGroup(withLayer: self, animationKey : key)
+        
         removeAllAnimations()
-        FA_addAnimation(anim, forKey: key)
+        FA_addAnimation(animation, forKey: key)
+      
     }
-
+    
     final public func anyValueForKeyPath(keyPath: String) -> Any? {
         if let currentFromValue = self.valueForKeyPath(keyPath) {
             
             if let value = typeCastCGColor(currentFromValue) {
                 return value
             }
-    
+            
             let type = String.fromCString(currentFromValue.objCType) ?? ""
             
             if type.hasPrefix("{CGPoint") {
@@ -136,7 +129,7 @@ extension UIColor {
             
             var red: CGFloat = 0, green: CGFloat = 0, blue: CGFloat = 0, alpha: CGFloat = 0
             return  self.getRed(&red, green: &green, blue: &blue, alpha: &alpha)
-        
+            
         } else if CGColorGetNumberOfComponents(self.CGColor) == 2 {
             
             var white: CGFloat = 0, whiteAlpha: CGFloat = 0
@@ -150,7 +143,7 @@ extension UIColor {
                 return true
             }
         }
-
+        
         return false
     }
 }

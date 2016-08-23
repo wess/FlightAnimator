@@ -13,29 +13,29 @@ import QuartzCore
 public typealias FAAnimationDidStart = ((anim: CAAnimation) -> Void)
 public typealias FAAnimationDidStop  = ((anim: CAAnimation, complete: Bool) -> Void)
 
-class FAAnimationDelegate : NSObject {
-
+public class FAAnimationDelegate : NSObject {
+    
     var animationDidStart : FAAnimationDidStart?
     var animationDidStop : FAAnimationDidStop?
     
-    override func animationDidStart(anim: CAAnimation) {
+    override public func animationDidStart(anim: CAAnimation) {
         if let startCallback = animationDidStart {
             startCallback(anim : anim)
         }
     }
     
-    override func animationDidStop(anim: CAAnimation, finished flag: Bool) {
+    override public func animationDidStop(anim: CAAnimation, finished flag: Bool) {
         if let stopCallback = animationDidStop {
             stopCallback(anim : anim, complete: flag)
           
         }
     }
     
-    func setDidStopCallback(stopCallback : FAAnimationDidStop) {
+    public func setDidStopCallback(stopCallback : FAAnimationDidStop) {
         animationDidStop = stopCallback
     }
     
-    func setDidStartCallback(startCallback : FAAnimationDidStart) {
+    public func setDidStartCallback(startCallback : FAAnimationDidStart) {
         animationDidStart = startCallback
     }
 }
@@ -90,7 +90,7 @@ public extension CAAnimation {
     
     private func callbacksSupported() -> Bool {
         if let _ = self as? FAAnimationGroup {
-        } else if let _ = self as? FAAnimation {
+        } else if let _ = self as? FABasicAnimation {
         } else{
             return false
         }
