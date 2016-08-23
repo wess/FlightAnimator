@@ -39,6 +39,14 @@ public enum FAPrimaryTimingPriority : Int {
 
 public class FAAnimationGroup : FASynchronizedGroup {
     
+    override public init() {
+        super.init()
+    }
+    
+    required public init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     /**
      Timing Priority to apply during synchronisation of hte animations
      within the calling animationGroup.
