@@ -276,7 +276,7 @@ public class FASynchronizedGroup : CAAnimationGroup {
     internal var _segmentArray = [AnimationTrigger]()
     internal var segmentArray = [AnimationTrigger]()
     
-    override init() {
+    override public init() {
         super.init()
         animations = [CAAnimation]()
         fillMode = kCAFillModeForwards
