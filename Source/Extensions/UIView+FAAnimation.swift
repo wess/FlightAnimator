@@ -9,6 +9,7 @@
 import Foundation
 import UIKit
 
+
 private struct FAAssociatedKey {
     static var layoutConfigurations = "layoutConfigurations"
 }
@@ -27,9 +28,9 @@ public extension UIView {
     }
     
     func fa_setAssociatedObject<T>(object: AnyObject,
-                                     value: T,
-                                     associativeKey: UnsafePointer<Void>,
-                                     policy: objc_AssociationPolicy) {
+                                value: T,
+                                associativeKey: UnsafePointer<Void>,
+                                policy: objc_AssociationPolicy) {
         
         if let v: AnyObject = value as? AnyObject {
             objc_setAssociatedObject(object, associativeKey, v,  policy)
@@ -47,7 +48,13 @@ public extension UIView {
             return nil
         }
     }
-        
+    
+    func applyAnimationsToSubViews(inView : UIView, forKey key: String, animated : Bool = true) {
+        for subView in inView.subviews {
+            subView.applyAnimation(forKey: key, animated: animated)
+        }
+    }
+    
     func appendAnimation(animation : AnyObject, forKey key: String) {
         
         if cachedAnimations == nil {
@@ -66,7 +73,7 @@ public extension UIView {
             cachedAnimations![NSString(string: key)] = newAnimationGroup
         }
         else if let newAnimationGroup = animation as? FAAnimationGroup {
-           
+            
             if let oldAnimation = cachedAnimations![key] {
                 oldAnimation.stopTriggerTimer()
             }
