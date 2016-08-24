@@ -13,10 +13,12 @@ public extension UIView {
     
     func animate(timingPriority : FAPrimaryTimingPriority = .MaxTime,
                  @noescape animator : (animator : FlightAnimator) -> Void ) {
+       
+        let animationKey = NSUUID().UUIDString
         
-        let newAnimator = FlightAnimator(withView: self, forKey : "AppliedAnimation",  priority : timingPriority)
+        let newAnimator = FlightAnimator(withView: self, forKey : animationKey,  priority : timingPriority)
         animator(animator : newAnimator)
-        applyAnimation(forKey: "AppliedAnimation")
+        applyAnimation(forKey: animationKey)
     }
     
     func cacheAnimation(forKey key: String,

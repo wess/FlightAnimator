@@ -135,9 +135,9 @@
 		3A7F4CF71D6CF904003D3B6F /* FAAnimationMaker */ = {
 			isa = PBXGroup;
 			children = (
+				3A7F4CFA1D6CF904003D3B6F /* FlightAnimator.swift */,
 				3A7F4CF81D6CF904003D3B6F /* FlightAnimator+API.swift */,
 				3A7F4CF91D6CF904003D3B6F /* FlightAnimator+UIView.swift */,
-				3A7F4CFA1D6CF904003D3B6F /* FlightAnimator.swift */,
 			);
 			path = FAAnimationMaker;
 			sourceTree = "<group>";

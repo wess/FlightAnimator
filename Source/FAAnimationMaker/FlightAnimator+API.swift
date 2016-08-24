@@ -107,7 +107,7 @@ extension FlightAnimator {
                                onView view: UIView,
                                @noescape animator: (animator : FlightAnimator) -> Void) {
         
-        triggerAnimation(timingPriority, timeBased : true, key: animationKey!, view: view, progress: 0.0, animator: animator)
+        triggerAnimation(timingPriority, timeBased : true, view: view, progress: 0.0, animator: animator)
     }
     
     public func triggerAtTimeProgress(timingPriority : FAPrimaryTimingPriority = .MaxTime,
@@ -115,7 +115,7 @@ extension FlightAnimator {
                                       onView view: UIView,
                                       @noescape animator: (animator : FlightAnimator) -> Void) {
         
-        triggerAnimation(timingPriority, timeBased : true, key: animationKey!, view: view, progress: progress, animator: animator)
+        triggerAnimation(timingPriority, timeBased : true, view: view, progress: progress, animator: animator)
     }
     
     public func triggerAtValueProgress(timingPriority : FAPrimaryTimingPriority = .MaxTime,
@@ -123,7 +123,7 @@ extension FlightAnimator {
                                        onView view: UIView,
                                        @noescape animator: (animator : FlightAnimator) -> Void) {
         
-        triggerAnimation(timingPriority, timeBased : false, key: animationKey!, view: view, progress: progress, animator: animator)
+        triggerAnimation(timingPriority, timeBased : false, view: view, progress: progress, animator: animator)
     }
 }
 

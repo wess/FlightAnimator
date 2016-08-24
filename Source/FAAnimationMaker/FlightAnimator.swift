@@ -45,17 +45,18 @@ public class FlightAnimator {
     
     internal func triggerAnimation(timingPriority : FAPrimaryTimingPriority = .MaxTime,
                                    timeBased : Bool,
-                                   key: String,
                                    view: UIView,
                                    progress: CGFloat = 0.0,
                                    @noescape animator: (animator : FlightAnimator) -> Void) {
 
+        let triggerKey = NSUUID().UUIDString
+        
         if let animationGroup = associatedView!.cachedAnimations![NSString(string: animationKey!)] {
             
             let animationTrigger = AnimationTrigger()
             animationTrigger.isTimedBased = timeBased
             animationTrigger.triggerProgessValue = progress
-            animationTrigger.animationKey = animationKey!
+            animationTrigger.animationKey = triggerKey
             animationTrigger.animatedView = view
             
             animationGroup._segmentArray.append(animationTrigger)
@@ -63,7 +64,7 @@ public class FlightAnimator {
             associatedView!.appendAnimation(animationGroup, forKey: animationKey!)
         }
         
-        let newAnimator = FlightAnimator(withView: view, forKey : animationKey!, priority : timingPriority)
+        let newAnimator = FlightAnimator(withView: view, forKey : triggerKey,  priority : timingPriority)
         animator(animator : newAnimator)
     }
 }
