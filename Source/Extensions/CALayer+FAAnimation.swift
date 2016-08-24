@@ -10,6 +10,21 @@
 import Foundation
 import UIKit
 
+func swizzleSelector(cls: AnyClass!, originalSelector : Selector, swizzledSelector : Selector) {
+    
+    let originalMethod = class_getInstanceMethod(cls, originalSelector)
+    let swizzledMethod = class_getInstanceMethod(cls, swizzledSelector)
+    
+    let didAddMethod = class_addMethod(cls, originalSelector, method_getImplementation(swizzledMethod), method_getTypeEncoding(swizzledMethod))
+    
+    if didAddMethod {
+        class_replaceMethod(cls, swizzledSelector, method_getImplementation(originalMethod), method_getTypeEncoding(originalMethod))
+    } else {
+        method_exchangeImplementations(originalMethod, swizzledMethod);
+    }
+}
+
+
 extension CALayer {
     
     final public class func swizzleAddAnimation() {
@@ -22,19 +37,18 @@ extension CALayer {
         }
         
         dispatch_once(&Static.token) {
-            let originalSelector = #selector(CALayer.addAnimation(_:forKey:))
-            let swizzledSelector = #selector(CALayer.FA_addAnimation(_:forKey:))
+            swizzleSelector(self,
+                            originalSelector: #selector(CALayer.addAnimation(_:forKey:)),
+                            swizzledSelector: #selector(CALayer.FA_addAnimation(_:forKey:)))
             
-            let originalMethod = class_getInstanceMethod(self, originalSelector)
-            let swizzledMethod = class_getInstanceMethod(self, swizzledSelector)
+            swizzleSelector(self,
+                            originalSelector: #selector(CALayer.removeAllAnimations),
+                            swizzledSelector: #selector(CALayer.FA_removeAllAnimations))
             
-            let didAddMethod = class_addMethod(self, originalSelector, method_getImplementation(swizzledMethod), method_getTypeEncoding(swizzledMethod))
+            swizzleSelector(self,
+                            originalSelector: #selector(CALayer.removeAnimationForKey(_:)),
+                            swizzledSelector: #selector(CALayer.FA_removeAnimationForKey(_:)))
             
-            if didAddMethod {
-                class_replaceMethod(self, swizzledSelector, method_getImplementation(originalMethod), method_getTypeEncoding(originalMethod))
-            } else {
-                method_exchangeImplementations(originalMethod, swizzledMethod);
-            }
             
             UIColor.swizzleGetRed()
         }
@@ -52,6 +66,29 @@ extension CALayer {
         removeAllAnimations()
         FA_addAnimation(animation, forKey: key)
       
+    }
+    internal func FA_removeAnimationForKey(key: String) {
+
+        if let animation = self.animationForKey(key) as? FAAnimationGroup  {
+            animation.stopTriggerTimer()
+        }
+        
+        FA_removeAnimationForKey(key)
+    }
+    
+    internal func FA_removeAllAnimations() {
+        guard let keys = self.animationKeys() else {
+            FA_removeAllAnimations()
+            return
+        }
+        
+        for key in keys {
+            if let animation = self.animationForKey(key) as? FAAnimationGroup  {
+                animation.stopTriggerTimer()
+            }
+        }
+        
+        FA_removeAllAnimations()
     }
     
     final public func anyValueForKeyPath(keyPath: String) -> Any? {
@@ -104,19 +141,9 @@ extension UIColor {
         }
         
         dispatch_once(&Static.token) {
-            let originalSelector = #selector(UIColor.getRed(_:green:blue:alpha:))
-            let swizzledSelector = #selector(UIColor.FA_getRed(_:green:blue:alpha:))
-            
-            let originalMethod = class_getInstanceMethod(self, originalSelector)
-            let swizzledMethod = class_getInstanceMethod(self, swizzledSelector)
-            
-            let didAddMethod = class_addMethod(self, originalSelector, method_getImplementation(swizzledMethod), method_getTypeEncoding(swizzledMethod))
-            
-            if didAddMethod {
-                class_replaceMethod(self, swizzledSelector, method_getImplementation(originalMethod), method_getTypeEncoding(originalMethod))
-            } else {
-                method_exchangeImplementations(originalMethod, swizzledMethod);
-            }
+            swizzleSelector(self,
+                            originalSelector: #selector(UIColor.getRed(_:green:blue:alpha:)),
+                            swizzledSelector: #selector(UIColor.FA_getRed(_:green:blue:alpha:)))
         }
     }
     
