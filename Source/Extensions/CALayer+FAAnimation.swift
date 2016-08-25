@@ -24,7 +24,6 @@ func swizzleSelector(cls: AnyClass!, originalSelector : Selector, swizzledSelect
     }
 }
 
-
 extension CALayer {
     
     final public class func swizzleAddAnimation() {
@@ -70,6 +69,7 @@ extension CALayer {
     internal func FA_removeAnimationForKey(key: String) {
 
         if let animation = self.animationForKey(key) as? FAAnimationGroup  {
+            print("STOPPED FORKEY ", animation.animationKey)
             animation.stopTriggerTimer()
         }
         
@@ -84,10 +84,11 @@ extension CALayer {
         
         for key in keys {
             if let animation = self.animationForKey(key) as? FAAnimationGroup  {
+                print("STOPPED ALL ", animation.animationKey)
                 animation.stopTriggerTimer()
             }
         }
-        
+
         FA_removeAllAnimations()
     }
     

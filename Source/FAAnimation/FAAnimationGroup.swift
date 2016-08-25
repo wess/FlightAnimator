@@ -193,13 +193,15 @@ public class FAAnimationGroup : FASynchronizedGroup {
                 animationLayer.speed = 1.0
                 animationLayer.timeOffset = 0.0
                 
-                if animationKey == nil {
-                    animationKey =  String(NSUUID().UUIDString)
-                }
+                //if animationKey == nil {
+                //    animationKey =  String(NSUUID().UUIDString)
+                //}
                 
-                startTime = animationLayer.convertTime(CACurrentMediaTime(), fromLayer: nil)
-                animationLayer.addAnimation(self, forKey: animationKey)
-                startTriggerTimer()
+                if let animationKey = animationKey {
+                    startTime = animationLayer.convertTime(CACurrentMediaTime(), fromLayer: nil)
+                    animationLayer.addAnimation(self, forKey: animationKey)
+                }
+        
             }
             
             if let subAnimations = animations {
@@ -295,6 +297,10 @@ public class FASynchronizedGroup : CAAnimationGroup {
         fatalError("init(coder:) has not been implemented")
     }
     
+    deinit {
+        displayLink?.invalidate()
+    }
+    
     override public func copyWithZone(zone: NSZone) -> AnyObject {
         let animationGroup = super.copyWithZone(zone) as! FASynchronizedGroup
         animationGroup.weakLayer                = weakLayer
@@ -302,6 +308,7 @@ public class FASynchronizedGroup : CAAnimationGroup {
         animationGroup.animationKey             = animationKey
         animationGroup.segmentArray             = segmentArray
         animationGroup.primaryAnimation         = primaryAnimation
+        animationGroup.displayLink              = displayLink
         animationGroup._segmentArray            = _segmentArray
         animationGroup._primaryTimingPriority   = _primaryTimingPriority
         animationGroup._autoreverse             = _autoreverse
@@ -328,10 +335,12 @@ public class FASynchronizedGroup : CAAnimationGroup {
                     oldAnimation.stopTriggerTimer()
                     _autoreverseActiveCount = oldAnimation._autoreverseActiveCount
                     synchronizeAnimations(oldAnimation)
+                    startTriggerTimer()
                 }
             }
         } else {
             synchronizeAnimations(nil)
+            self.startTriggerTimer()
         }
     }
 }
@@ -387,7 +396,6 @@ internal extension FASynchronizedGroup {
         removedOnCompletion = true
         stopTriggerTimer()
     }
-    
     
     func reverseAnimationArray() ->[FABasicAnimation] {
         
@@ -556,10 +564,21 @@ public class AnimationTrigger : Equatable {
     required public init() {
         
     }
+
+    public func copyWithZone(zone: NSZone) -> AnyObject {
+        let animationGroup = AnimationTrigger()
+        animationGroup.isTimedBased         = isTimedBased
+        animationGroup.triggerProgessValue  = triggerProgessValue
+        animationGroup.animationKey         = animationKey
+        animationGroup.animatedView         = animatedView
+        animationGroup.animation            = animation
+        return animationGroup
+    }
 }
 
-
 //MARK: - AnimationTrigger Logic
+
+private let DebugTrugger = true
 
 public extension FASynchronizedGroup {
     
@@ -619,14 +638,15 @@ public extension FASynchronizedGroup {
             return
         }
         
-        stopTriggerTimer()
         segmentArray = _segmentArray
         
-        displayLink = CADisplayLink(target: self, selector: #selector(FAAnimationGroup.updateTrigger))
-        displayLink!.addToRunLoop(NSRunLoop.mainRunLoop(), forMode: NSDefaultRunLoopMode)
-        displayLink!.paused = false
+        self.displayLink = CADisplayLink(target: self, selector: #selector(FASynchronizedGroup.updateTrigger))
+        if DebugTrugger {  print("START ++++++++ KEY \(animationKey)  -  CALINK  \(displayLink)\n") }
         
-        //print("START ++++++++ CALINK \(weakLayer?.description)  - \(displayLink)\n")
+        self.displayLink?.addToRunLoop(NSRunLoop.mainRunLoop(), forMode: NSDefaultRunLoopMode)
+       // if DebugTrugger {  print("START ++++++++ KEY \(animationKey)  -  CALINK  \(displayLink)\n") }
+        
+        updateTrigger()
     }
     
     /**
@@ -634,16 +654,15 @@ public extension FASynchronizedGroup {
      */
     func stopTriggerTimer() {
         
-        guard displayLink != nil else {
+        guard let displayLink = displayLink else {
             return
         }
-        
-        self.displayLink?.paused = true
-        
-        // print("STOP ++++++++ CALINK \(weakLayer?.description)  - \(displayLink)\n")
+
+        displayLink.paused = true
+        displayLink.invalidate()
+        if DebugTrugger { print("STOP ++++++++ KEY \(animationKey)  -  CALINK  \(displayLink)\n") }
         segmentArray = [AnimationTrigger]()
         
-        self.displayLink?.removeFromRunLoop(NSRunLoop.mainRunLoop(), forMode: NSDefaultRunLoopMode)
         self.displayLink = nil
     }
     
@@ -655,11 +674,10 @@ public extension FASynchronizedGroup {
         for segment in segmentArray {
             if segment.isTimedBased && primaryAnimation?.timeProgress() >= segment.triggerProgessValue ||
                 !segment.isTimedBased && primaryAnimation?.valueProgress() >= segment.triggerProgessValue  {
-                
-                segmentArray.removeObject(segment)
+                if DebugTrugger {  print("TRIGGER ++++++++ KEY \(segment.animationKey!)  -  CALINK  \(displayLink)\n") }
+            
                 segment.animatedView!.applyAnimation(forKey: segment.animationKey! as String)
-                
-                //print("TRIGGER  ++++++++ CALINK \(weakLayer?.description)  - \(displayLink)\n")
+                segmentArray.removeObject(segment)
             }
             
             if segmentArray.count <= 0 && _autoreverse == false {
