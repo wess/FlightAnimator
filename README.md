@@ -78,7 +78,7 @@ view.animate { (animator) in
 }
 ```
 
-Once you have created a property animation within the group, it recursively returns an instance of PropertyAnimationConfig, which allows for chaining the a duration, easing curve, or primary flag, documentated documented at a later point in the documentation. 
+Once you have created a property animation within the group, it recursively returns an instance of a `PropertyAnimator`, which allows for chaining the a duration, easing curve, or primary flag, documentated documented at a later point in the documentation. 
 
 ```swift
 func duration(duration : CGFloat) -> PropertyAnimationConfig
@@ -133,6 +133,24 @@ view.animate { (animator) in
 }
 ```
 
+####Trigger On Completion
+
+To trigger an animation right as the parent animation completes, attach a trigger on a parent animator by calling `animator.triggerOnCompletion(...)`. The trigger will perform the animation enclosed accordingly right as the parent finishes relative to animation time. 
+
+```
+// Parent Animation Group
+view.animate { (animator) in
+	animator.bounds(newBounds).duration(0.5).easing(.EaseOutCubic)
+    animator.position(newPositon).duration(0.5).easing(.EaseOutCubic)
+    
+    // Child Animation Group, Triggered by Parent Group
+    animator.triggerOnComplete(onView: self.secondaryView, animator: { (animator) in
+         animator.bounds(newSecondaryBounds).duration(0.5).easing(.OutCubic)
+         animator.position(newSecondaryCenter).duration(0.5).easing(.OutCubic)
+    })
+}
+```
+
 ####Trigger Relative to Time Progress
 
 A time based trigger will apply the next animation based on the progressed time of the overall parent animation. The progress value is defined with a range from 0.0 - 1.0, if the over all time of an animation is 1.0 second, by setting the atProgress paramter to 0.5, will trigger the animation at the 0.5 seconds into the parent animation. 
@@ -144,7 +162,7 @@ view.animate { (animator) in
 	animator.bounds(newBounds).duration(0.5).easing(.OutCubic)
     animator.position(newPositon).duration(0.5).easing(.OutCubic)
     
-    animator.triggerAtTimeProgress(atProgress: 0.5, onView: self.secondaryView, animator: { (animator) in
+    animator.triggerOnProgress(0.5, onView: self.secondaryView, animator: { (animator) in
          animator.bounds(newSecondaryBounds).duration(0.5).easing(.OutCubic)
          animator.position(newSecondaryCenter).duration(0.5).easing(.OutCubic)
     })
@@ -160,7 +178,7 @@ view.animate { (animator) in
 	animator.bounds(newBounds).duration(0.5).easing(.EaseOutCubic)
     animator.position(newPositon).duration(0.5).easing(.EaseOutCubic)
     
-    animator.triggerAtValueProgress(atProgress: 0.5, onView: self.secondaryView, animator: { (animator) in
+    animator.triggerOnValueProgress(atProgress: 0.5, onView: self.secondaryView, animator: { (animator) in
          animator.bounds(newSecondaryBounds).duration(0.5).easing(.OutCubic)
          animator.position(newSecondaryCenter).duration(0.5).easing(.OutCubic)
     })
