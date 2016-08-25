@@ -382,8 +382,8 @@ public enum FAEasing : Equatable {
             return self
         }
     }
-    
 }
+
 
 public func ==(lhs : FAEasing, rhs : FAEasing) -> Bool {
     switch lhs {

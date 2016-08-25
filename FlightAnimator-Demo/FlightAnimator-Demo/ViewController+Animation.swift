@@ -122,6 +122,7 @@ extension ViewController {
             return
         }
         
+        
         dragView.animate(animConfig.primaryTimingPriority) { [weak self] (a) in
            
             guard let weakSelf = self else {
@@ -147,9 +148,9 @@ extension ViewController {
                 
                 switch config.triggerType {
                 case 1:
-                    a.triggerAtTimeProgress(atProgress: config.triggerProgress,
-                                            onView: weakSelf.dragView2,
-                                            animator: { (a) in
+                    a.triggerOnProgress(config.triggerProgress,
+                                        onView: weakSelf.dragView2,
+                                        animator: { (a) in
                        
                         a.bounds(currentBounds).duration(duration).easing(config.sizeFunction).primary(config.sizePrimary)
                         a.position(currentPosition).duration(duration).easing(config.positionFunction).primary(config.positionPrimary)
@@ -158,7 +159,7 @@ extension ViewController {
                    
                     })
                 case 2:
-                    a.triggerAtValueProgress(atProgress : config.triggerProgress,
+                    a.triggerOnValueProgress(config.triggerProgress,
                                              onView: weakSelf.dragView2,
                                              animator: { (a) in
                                                 
@@ -192,10 +193,10 @@ extension ViewController {
         
         let currentBounds = CGRectMake(0, 0, lastToFrame.size.width , lastToFrame.size.height)
         let currentPosition = CGCSRectGetCenter(lastToFrame)
-        let currentAlpha = self.dragView.alpha
-        let currentTransform = self.dragView.layer.transform
+        let currentAlpha = dragView.alpha
+        let currentTransform = dragView.layer.transform
  
-        var easingFunction :FAEasing = self.animConfig.positionFunction
+        var easingFunction :FAEasing = animConfig.positionFunction
         
         switch animConfig.positionFunction {
          case .SpringDecay(_):
@@ -209,36 +210,34 @@ extension ViewController {
 
         let duration : CGFloat = 0.5
         
-        dragView.cacheAnimation(forKey : AnimationKeys.PanGestureKey, timingPriority: self.animConfig.primaryTimingPriority) {[unowned self]  (animator) in
-            animator.bounds(finalBounds).duration(0.5).easing(.OutQuadratic).primary(false)
-            animator.position(finalCenter).duration(0.6).easing(easingFunction).primary(true)
-            
+        dragView.cacheAnimation(forKey : AnimationKeys.PanGestureKey, timingPriority: self.animConfig.primaryTimingPriority) {[unowned self]  (anim) in
+            anim.bounds(finalBounds).duration(0.5).easing(.OutQuadratic).primary(false)
+            anim.position(finalCenter).duration(0.6).easing(easingFunction).primary(true)
             
             if self.animConfig.enableSecondaryView {
                 switch self.animConfig.triggerType {
                 case 1:
-                    animator.triggerAtTimeProgress(atProgress: self.animConfig.triggerProgress, onView: self.dragView2, animator: {[unowned self]  (animator) in
-                        animator.bounds(currentBounds).duration(duration).easing(self.animConfig.sizeFunction).primary(self.animConfig.sizePrimary)
-                        animator.position(currentPosition).duration(duration).easing(self.animConfig.positionFunction).primary(self.animConfig.positionPrimary)
-                        animator.alpha(currentAlpha).duration(duration).easing(self.animConfig.alphaFunction).primary(self.animConfig.alphaPrimary)
-                     animator.transform(currentTransform).duration(duration).easing(self.animConfig.transformFunction).primary(self.animConfig.transformPrimary)
+                    anim.triggerOnProgress(self.animConfig.triggerProgress, onView: self.dragView2, animator: {[unowned self]  (anim) in
+                        anim.bounds(currentBounds).duration(duration).easing(self.animConfig.sizeFunction).primary(self.animConfig.sizePrimary)
+                        anim.position(currentPosition).duration(duration).easing(self.animConfig.positionFunction).primary(self.animConfig.positionPrimary)
+                        anim.alpha(currentAlpha).duration(duration).easing(self.animConfig.alphaFunction).primary(self.animConfig.alphaPrimary)
+                        anim.transform(currentTransform).duration(duration).easing(self.animConfig.transformFunction).primary(self.animConfig.transformPrimary)
                     })
                 case 2:
-                    animator.triggerAtValueProgress(atProgress : self.animConfig.triggerProgress, onView: self.dragView2, animator: {[unowned self]  (animator) in
-                        animator.bounds(currentBounds).duration(duration).easing(self.animConfig.sizeFunction).primary(self.animConfig.sizePrimary)
-                        animator.position(currentPosition).duration(duration).easing(self.animConfig.positionFunction).primary(self.animConfig.positionPrimary)
-                        animator.alpha(currentAlpha).duration(duration).easing(self.animConfig.alphaFunction).primary(self.animConfig.alphaPrimary)
-                 animator.transform(currentTransform).duration(duration).easing(self.animConfig.transformFunction).primary(self.animConfig.transformPrimary)
+                    anim.triggerOnValueProgress(self.animConfig.triggerProgress, onView: self.dragView2, animator: {[unowned self]  (anim) in
+                        anim.bounds(currentBounds).duration(duration).easing(self.animConfig.sizeFunction).primary(self.animConfig.sizePrimary)
+                        anim.position(currentPosition).duration(duration).easing(self.animConfig.positionFunction).primary(self.animConfig.positionPrimary)
+                        anim.alpha(currentAlpha).duration(duration).easing(self.animConfig.alphaFunction).primary(self.animConfig.alphaPrimary)
+                        anim.transform(currentTransform).duration(duration).easing(self.animConfig.transformFunction).primary(self.animConfig.transformPrimary)
                     })
                 default:
-                    animator.triggerOnStart(onView: self.dragView2, animator: {[unowned self]  (animator) in
-                        animator.bounds(currentBounds).duration(duration).easing(self.animConfig.sizeFunction).primary(self.animConfig.sizePrimary)
-                        animator.position(currentPosition).duration(duration).easing(self.animConfig.positionFunction).primary(self.animConfig.positionPrimary)
-                        animator.alpha(currentAlpha).duration(duration).easing(self.animConfig.alphaFunction).primary(self.animConfig.alphaPrimary)
-         animator.transform(currentTransform).duration(duration).easing(self.animConfig.transformFunction).primary(self.animConfig.transformPrimary)
+                    anim.triggerOnStart(onView: self.dragView2, animator: {[unowned self]  (anim) in
+                        anim.bounds(currentBounds).duration(duration).easing(self.animConfig.sizeFunction).primary(self.animConfig.sizePrimary)
+                        anim.position(currentPosition).duration(duration).easing(self.animConfig.positionFunction).primary(self.animConfig.positionPrimary)
+                        anim.alpha(currentAlpha).duration(duration).easing(self.animConfig.alphaFunction).primary(self.animConfig.alphaPrimary)
+                        anim.transform(currentTransform).duration(duration).easing(self.animConfig.transformFunction).primary(self.animConfig.transformPrimary)
                     })
                 }
-                
             }
         }
         

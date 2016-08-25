@@ -8,7 +8,6 @@
 
 import Foundation
 import UIKit
-import QuartzCore
 
 public typealias FAAnimationDidStart = ((anim: CAAnimation) -> Void)
 public typealias FAAnimationDidStop  = ((anim: CAAnimation, complete: Bool) -> Void)
@@ -27,7 +26,6 @@ public class FAAnimationDelegate : NSObject {
     override public func animationDidStop(anim: CAAnimation, finished flag: Bool) {
         if let stopCallback = animationDidStop {
             stopCallback(anim : anim, complete: flag)
-          
         }
     }
     

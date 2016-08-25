@@ -158,7 +158,6 @@ extension Interpolator {
         return progress
     }
     
-    
     func zeroVelocityValue() -> Any? {
         
         var zeroValue : Any?

@@ -10,7 +10,7 @@
 import Foundation
 import UIKit
 
-func swizzleSelector(cls: AnyClass!, originalSelector : Selector, swizzledSelector : Selector) {
+internal func swizzleSelector(cls: AnyClass!, originalSelector : Selector, swizzledSelector : Selector) {
     
     let originalMethod = class_getInstanceMethod(cls, originalSelector)
     let swizzledMethod = class_getInstanceMethod(cls, swizzledSelector)
@@ -132,7 +132,7 @@ extension UIColor {
     // This is needed to fix the following radar
     // http://openradar.appspot.com/radar?id=3114410
     
-    final public class func swizzleGetRed() {
+    final internal class func swizzleGetRed() {
         struct Static {
             static var token: dispatch_once_t = 0
         }

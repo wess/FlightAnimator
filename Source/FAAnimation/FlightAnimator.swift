@@ -16,7 +16,7 @@ public class FlightAnimator {
     internal weak var associatedView : UIView?
     internal var animationKey : String?
     
-    var animationConfigurations = [String : PropertyAnimationConfig]()
+    var animationConfigurations = [String : PropertyAnimator]()
     var primaryTimingPriority : FAPrimaryTimingPriority = .MaxTime
     
     init(withView view : UIView, forKey key: String, priority : FAPrimaryTimingPriority = .MaxTime) {
@@ -37,7 +37,6 @@ public class FlightAnimator {
             associatedView!.cachedAnimations![NSString(string: animationKey!)] = nil
         }
         
-       
         let newGroup = FAAnimationGroup()
         newGroup.configureAnimationGroup(withLayer: associatedView?.layer, animationKey: animationKey)
         newGroup.primaryTimingPriority = primaryTimingPriority
@@ -71,7 +70,7 @@ public class FlightAnimator {
     }
 }
 
-public class PropertyAnimationConfig  {
+public class PropertyAnimator  {
     
     private weak var associatedView : UIView?
     private var animationKey : String?
@@ -97,19 +96,19 @@ public class PropertyAnimationConfig  {
         //print ("DEINIT PropertyAnimationConfig")
     }
     
-    public func duration(duration : CGFloat) -> PropertyAnimationConfig {
+    public func duration(duration : CGFloat) -> PropertyAnimator {
         self.duration = duration
         updateAnimation()
         return self
     }
     
-    public func easing(easing : FAEasing) -> PropertyAnimationConfig {
+    public func easing(easing : FAEasing) -> PropertyAnimator {
         self.easingCurve = easing
         updateAnimation()
         return self
     }
     
-    public func primary(primary : Bool) -> PropertyAnimationConfig {
+    public func primary(primary : Bool) -> PropertyAnimator {
         self.primary = primary
         updateAnimation()
         return self

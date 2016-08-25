@@ -14,7 +14,7 @@ private struct FAAssociatedKey {
     static var layoutConfigurations = "layoutConfigurations"
 }
 
-public extension UIView {
+internal extension UIView {
     
     var cachedAnimations: [NSString : FAAnimationGroup]? {
         get {

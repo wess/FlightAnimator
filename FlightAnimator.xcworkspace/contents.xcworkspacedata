@@ -4,22 +4,15 @@
    <Group
       location = "group:Source"
       name = "Source">
-      <Group
-         location = "group:Extensions"
-         name = "Extensions">
-         <FileRef
-            location = "group:CALayer+FAAnimation.swift">
-         </FileRef>
-         <FileRef
-            location = "group:FAAnimation+Callbacks.swift">
-         </FileRef>
-         <FileRef
-            location = "group:NSValue+FAAnimation.swift">
-         </FileRef>
-         <FileRef
-            location = "group:UIView+FAAnimation.swift">
-         </FileRef>
-      </Group>
+      <FileRef
+         location = "group:FlightAnimator+API.swift">
+      </FileRef>
+      <FileRef
+         location = "group:FlightAnimator+Callbacks.swift">
+      </FileRef>
+      <FileRef
+         location = "group:/Users/Anton/Developer/FlightAnimator/Source/FlightAnimator+Cache.swift">
+      </FileRef>
       <Group
          location = "group:FAAnimation"
          name = "FAAnimation">
@@ -28,16 +21,6 @@
          </FileRef>
          <FileRef
             location = "group:FABasicAnimation.swift">
-         </FileRef>
-      </Group>
-      <Group
-         location = "group:FAAnimationMaker"
-         name = "FAAnimationMaker">
-         <FileRef
-            location = "group:FlightAnimator+API.swift">
-         </FileRef>
-         <FileRef
-            location = "group:FlightAnimator+UIView.swift">
          </FileRef>
          <FileRef
             location = "group:FlightAnimator.swift">
@@ -57,6 +40,19 @@
          </FileRef>
          <FileRef
             location = "group:FAVector.swift">
+         </FileRef>
+      </Group>
+      <Group
+         location = "group:Extensions"
+         name = "Extensions">
+         <FileRef
+            location = "group:CALayer+FAAnimation.swift">
+         </FileRef>
+         <FileRef
+            location = "group:NSValue+FAAnimation.swift">
+         </FileRef>
+         <FileRef
+            location = "group:/Users/Anton/Developer/FlightAnimator/Source/Extensions/UIView+FAAnimation.swift">
          </FileRef>
       </Group>
    </Group>

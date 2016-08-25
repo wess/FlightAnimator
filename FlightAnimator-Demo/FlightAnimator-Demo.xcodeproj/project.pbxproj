@@ -17,7 +17,7 @@
 		139493A01D0FD232004B0BD4 /* ViewController+Animation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1394939F1D0FD232004B0BD4 /* ViewController+Animation.swift */; };
 		139493A51D107739004B0BD4 /* HGAlignment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 139493A41D107739004B0BD4 /* HGAlignment.swift */; };
 		13D0A12A1D30297900B87760 /* FlightAnimatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13D0A1291D30297900B87760 /* FlightAnimatorTests.swift */; };
-		3A7F4CC81D6C39E1003D3B6F /* FlightAnimator.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A7F4CC71D6C39E1003D3B6F /* FlightAnimator.framework */; };
+		3A7F4D741D6EED53003D3B6F /* FlightAnimator.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A7F4D731D6EED53003D3B6F /* FlightAnimator.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -45,7 +45,7 @@
 		13D0A1271D30297900B87760 /* FlightAnimatorTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FlightAnimatorTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		13D0A1291D30297900B87760 /* FlightAnimatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlightAnimatorTests.swift; sourceTree = "<group>"; };
 		13D0A12B1D30297900B87760 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		3A7F4CC71D6C39E1003D3B6F /* FlightAnimator.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FlightAnimator.framework; path = "../../../../Library/Developer/Xcode/DerivedData/FlightAnimator-gfrenjeofutlomgseqgdkfkptrsl/Build/Products/Release-iphonesimulator/FlightAnimator.framework"; sourceTree = "<group>"; };
+		3A7F4D731D6EED53003D3B6F /* FlightAnimator.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FlightAnimator.framework; path = "../../../Library/Developer/Xcode/DerivedData/FlightAnimator-gfrenjeofutlomgseqgdkfkptrsl/Build/Products/Debug-iphonesimulator/FlightAnimator.framework"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -53,7 +53,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3A7F4CC81D6C39E1003D3B6F /* FlightAnimator.framework in Frameworks */,
+				3A7F4D741D6EED53003D3B6F /* FlightAnimator.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -70,6 +70,7 @@
 		13009D031D0B9132008419C8 = {
 			isa = PBXGroup;
 			children = (
+				3A7F4D731D6EED53003D3B6F /* FlightAnimator.framework */,
 				13009D0E1D0B9132008419C8 /* FlightAnimator-Demo */,
 				13009D271D0B93C4008419C8 /* SupportingFiles */,
 				13D0A1281D30297900B87760 /* FlightAnimatorTests */,
@@ -89,7 +90,6 @@
 		13009D0E1D0B9132008419C8 /* FlightAnimator-Demo */ = {
 			isa = PBXGroup;
 			children = (
-				3A7F4CC71D6C39E1003D3B6F /* FlightAnimator.framework */,
 				13009D891D0B9869008419C8 /* AppDelegate.swift */,
 				13009D8E1D0B98CB008419C8 /* UI */,
 				13009D8D1D0B98BB008419C8 /* Extensions */,

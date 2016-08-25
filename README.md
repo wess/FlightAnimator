@@ -1,14 +1,17 @@
 #FlightAnimator
 
 
-[![Cocoapods Compatible](https://img.shields.io/badge/pod-v0.9.1-blue.svg)]()
+[![Cocoapods Compatible](https://img.shields.io/badge/pod-v0.9.2-blue.svg)]()
 [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)]()
 [![Platform](https://img.shields.io/badge/platform-ios | tvos-lightgrey.svg)]()
 [![License](https://img.shields.io/badge/license-MIT-343434.svg)](/LICENSE.md)
 
 ![alt tag](/Documentation/FlightBanner.jpg?raw=true)
 
+**API Update!! See [Release Notes](/Documentation/release_notes.md) Migrating from versions lower than 0.9.1**
+
 ##Introduction
+
 
 FlightAnimator is a natural animation engine built on top of CoreAnimation, and provides a very simple blocks based syntax to create, configure, cache, and reuse animations dynamically. 
 

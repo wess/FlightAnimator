@@ -647,6 +647,7 @@ public extension FASynchronizedGroup {
         updateTrigger()
     }
     
+    
     /**
      Stops the timer
      */
@@ -662,6 +663,7 @@ public extension FASynchronizedGroup {
 
         self.displayLink = nil
     }
+    
     
     /**
      Triggers an animation if the value or time progress is met
@@ -696,9 +698,4 @@ public extension FASynchronizedGroup {
         return nil
     }
 }
-
-
-
-
-
 

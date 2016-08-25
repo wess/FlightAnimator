@@ -11,16 +11,6 @@ import UIKit
 
 public extension UIView {
     
-    func animate(timingPriority : FAPrimaryTimingPriority = .MaxTime,
-                 @noescape animator : (animator : FlightAnimator) -> Void ) {
-       
-        let animationKey = "APPLIEDANIMATION"
-        
-        let newAnimator = FlightAnimator(withView: self, forKey : animationKey,  priority : timingPriority)
-        animator(animator : newAnimator)
-        applyAnimation(forKey: animationKey)
-    }
-    
     func cacheAnimation(forKey key: String,
                         timingPriority : FAPrimaryTimingPriority = .MaxTime,
                         @noescape animator : (animator : FlightAnimator) -> Void ) {
@@ -68,9 +58,9 @@ public extension UIView {
             animation.applyFinalState(animated)
         }
     }
-    
-    
+
     /*
+     
     func applyAnimationTree(forKey key: String,
                                    animated : Bool = true) {
         
@@ -83,5 +73,6 @@ public extension UIView {
             subView.applyAnimation(forKey: key, animated: animated)
         }
     }
+     
     */
 }
