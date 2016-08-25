@@ -109,6 +109,14 @@ extension FlightAnimator {
         
         triggerAnimation(timingPriority, timeBased : true, view: view, progress: 0.0, animator: animator)
     }
+
+    public func triggerOnCompletion(timingPriority : FAPrimaryTimingPriority = .MaxTime,
+                                    onView view: UIView,
+                                    @noescape animator: (animator : FlightAnimator) -> Void) {
+        
+        triggerAnimation(timingPriority, timeBased : true, view: view, progress: 1.0, animator: animator)
+    }
+    
     
     public func triggerAtTimeProgress(timingPriority : FAPrimaryTimingPriority = .MaxTime,
                                       atProgress progress: CGFloat,

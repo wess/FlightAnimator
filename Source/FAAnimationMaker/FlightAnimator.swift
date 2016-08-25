@@ -9,6 +9,8 @@
 import Foundation
 import UIKit
 
+internal let DebugTriggerLogEnabled = false
+
 public class FlightAnimator {
     
     internal weak var associatedView : UIView?

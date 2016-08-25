@@ -578,8 +578,6 @@ public class AnimationTrigger : Equatable {
 
 //MARK: - AnimationTrigger Logic
 
-private let DebugTrugger = true
-
 public extension FASynchronizedGroup {
     
     /**
@@ -641,7 +639,7 @@ public extension FASynchronizedGroup {
         segmentArray = _segmentArray
         
         self.displayLink = CADisplayLink(target: self, selector: #selector(FASynchronizedGroup.updateTrigger))
-        if DebugTrugger {  print("START ++++++++ KEY \(animationKey)  -  CALINK  \(displayLink)\n") }
+        if DebugTriggerLogEnabled {  print("START ++++++++ KEY \(animationKey)  -  CALINK  \(displayLink)\n") }
         
         self.displayLink?.addToRunLoop(NSRunLoop.mainRunLoop(), forMode: NSDefaultRunLoopMode)
        // if DebugTrugger {  print("START ++++++++ KEY \(animationKey)  -  CALINK  \(displayLink)\n") }
@@ -658,11 +656,10 @@ public extension FASynchronizedGroup {
             return
         }
 
-        displayLink.paused = true
-        displayLink.invalidate()
-        if DebugTrugger { print("STOP ++++++++ KEY \(animationKey)  -  CALINK  \(displayLink)\n") }
         segmentArray = [AnimationTrigger]()
-        
+        displayLink.invalidate()
+        if DebugTriggerLogEnabled { print("STOP ++++++++ KEY \(animationKey)  -  CALINK  \(displayLink)\n") }
+
         self.displayLink = nil
     }
     
@@ -672,12 +669,12 @@ public extension FASynchronizedGroup {
     func updateTrigger() {
         
         for segment in segmentArray {
-            if segment.isTimedBased && primaryAnimation?.timeProgress() >= segment.triggerProgessValue ||
-                !segment.isTimedBased && primaryAnimation?.valueProgress() >= segment.triggerProgessValue  {
-                if DebugTrugger {  print("TRIGGER ++++++++ KEY \(segment.animationKey!)  -  CALINK  \(displayLink)\n") }
+            if let triggerSegment = self.activeTriggerSegment(segment)  {
+                
+                if DebugTriggerLogEnabled {  print("TRIGGER ++++++++ KEY \(segment.animationKey!)  -  CALINK  \(displayLink)\n") }
             
-                segment.animatedView!.applyAnimation(forKey: segment.animationKey! as String)
-                segmentArray.removeObject(segment)
+                triggerSegment.animatedView!.applyAnimation(forKey: triggerSegment.animationKey! as String)
+                segmentArray.removeObject(triggerSegment)
             }
             
             if segmentArray.count <= 0 && _autoreverse == false {
@@ -686,4 +683,22 @@ public extension FASynchronizedGroup {
             }
         }
     }
+    
+    func activeTriggerSegment(segment : AnimationTrigger) -> AnimationTrigger? {
+    
+        let fireTimeBasedTrigger  = segment.isTimedBased && primaryAnimation?.timeProgress() >= segment.triggerProgessValue!
+        let fireValueBasedTrigger = segment.isTimedBased == false && primaryAnimation?.valueProgress() >= segment.triggerProgessValue!
+        
+        if fireTimeBasedTrigger || fireValueBasedTrigger {
+            return segment
+        }
+        
+        return nil
+    }
 }
+
+
+
+
+
+
