@@ -75,50 +75,35 @@ To really see the power of **FlightAnimator**, let's first start by defining an 
 	positionAnimation.fromValue 			= NSValue(CGPoint : view.layer.position)
 	positionAnimation.fillMode              = kCAFillModeForwards
 	positionAnimation.timingFunction        = CAMediaTimingFunction(name:kCAMediaTimingFunctionEaseOut)
+	
+	let progressAnimation 					= CABasicAnimation(keyPath: "animatableProgress")
+	progressAnimation.toValue 				= 1.0
+	progressAnimation.fromValue 			= 0
+	progressAnimation.fillMode              = kCAFillModeForwards
+	progressAnimation.timingFunction        = CAMediaTimingFunction(name:kCAMediaTimingFunctionEaseOut)
 
 	let animationGroup 						= CAAnimationGroup()
 	animationGroup.duration 				= 0.5
 	animationGroup.removedOnCompletion   	= true
-	animationGroup.animations 				= [alphaAnimation,  boundsAnimation, positionAnimation]
+	animationGroup.animations 				= [alphaAnimation,  boundsAnimation, positionAnimation, progressAnimation]
 
 	view.layer.addAnimation(animationGroup, forKey: "PositionAnimationKey")
 	view.frame = toFrame
 ```
+
 Now that we saw the example above. Let's re-define **FlightAnimator**'s blocks based syntax
+
 
 ```swift
 	view.animate {  [unowned self] (animator) in
 	    animator.alpha(toAlpha).duration(0.5).easing(.OutCubic)
 		animator.bounds(toBounds).duration(0.5).easing(.OutCubic)
       	animator.position(toPosition).duration(0.5).easing(.OutCubic)
+      	animator.value(toProgress, forKeyPath : "animatableProgress").duration(0.5).easing(.OutCubic)
 	}
 ```
 
-Calling `animate(:)` on the **view** begins the `FAAnimationGroup` creation process. Inside the closure the **animator** creates, configures, then appends custom animations to the newly created parent group. Define each individual property animation by calling one of the pre-defined property setters, or use `func value(:, forKeyPath:) -> PropertyAnimator` for **any** other animatable property.
-
-
-```swift
-	func alpha(:) 				-> PropertyAnimator
-	func anchorPoint(:) 		-> PropertyAnimator
-    func backgroundColor(:) 	-> PropertyAnimator
-    func bounds(:) 				-> PropertyAnimator
-    func borderColor(:) 		-> PropertyAnimator
-    func borderWidth(:) 		-> PropertyAnimator
-    func contentsRect(:) 		-> PropertyAnimator
-    func cornerRadius(:) 		-> PropertyAnimator     
-    func opacity(:) 			-> PropertyAnimator
-    func position(:) 			-> PropertyAnimator
-    func shadowColor(:) 		-> PropertyAnimator
-    func shadowOffset(:) 		-> PropertyAnimator
-    func shadowOpacity(:) 		-> PropertyAnimator
-    func shadowRadius(:) 		-> PropertyAnimator
-    func size(:) 				-> PropertyAnimator
-    func sublayerTransform(:) 	-> PropertyAnimator
-    func transform(:) 			-> PropertyAnimator
-    func zPosition(:) 			-> PropertyAnimator
-
-    func value(:, forKeyPath:) 	-> PropertyAnimator
-```
+Calling `animate(:)` on the **view** begins the `FAAnimationGroup` creation process. Inside the closure the **animator** creates, configures, then appends custom animations to the newly created parent group. Define each individual property animation by calling one of the  [pre-defined property setters](/Documentation/predefined_setters.md), and/or the `func value(:, forKeyPath:) -> PropertyAnimator` method for **any** other animatable property.
 
 Once the property animation is initiated, recursively configure the `PropertyAnimator` by chaining duration, easing, and/or primary designation, to create the final `FABasicAnimation`, and add it to the parent group.
 
