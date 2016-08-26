@@ -57,7 +57,7 @@ Under the hood animations built are `CAAnimationGroup`(s) with multiple custom `
 
 To really see the power of **FlightAnimator**, let's first start by defining an animation using `CoreAnimation`, then re-define it using the framework's blocks based syntax. The animation below uses a `CAAnimationGroup` to group 3 individual `CABasicAnimations` for alpha, bounds, and position. 
 
-```
+```swift
 	let alphaAnimation 						= CABasicAnimation(keyPath: "position")
 	alphaAnimation.toValue 					= 0.0
 	alphaAnimation.fromValue 				= 1.0
@@ -86,7 +86,7 @@ To really see the power of **FlightAnimator**, let's first start by defining an 
 ```
 Now that we saw the example above. Let's re-define **FlightAnimator**'s blocks based syntax
 
-```
+```swift
 	view.animate {  [unowned self] (animator) in
 	    animator.alpha(toAlpha).duration(0.5).easing(.OutCubic)
 		animator.bounds(toBounds).duration(0.5).easing(.OutCubic)
@@ -97,7 +97,7 @@ Now that we saw the example above. Let's re-define **FlightAnimator**'s blocks b
 Calling `animate(:)` on the **view** begins the `FAAnimationGroup` creation process. Inside the closure the **animator** creates, configures, then appends custom animations to the newly created parent group. Define each individual property animation by calling one of the pre-defined property setters, or use `func value(:, forKeyPath:) -> PropertyAnimator` for **any** other animatable property.
 
 
-```
+```swift
 	func alpha(:) 				-> PropertyAnimator
 	func anchorPoint(:) 		-> PropertyAnimator
     func backgroundColor(:) 	-> PropertyAnimator
@@ -122,7 +122,7 @@ Calling `animate(:)` on the **view** begins the `FAAnimationGroup` creation proc
 
 Once the property animation is initiated, recursively configure the `PropertyAnimator` by chaining duration, easing, and/or primary designation, to create the final `FABasicAnimation`, and add it to the parent group.
 
-```
+```swift
 	func duration(duration : CGFloat) -> PropertyAnimator
 	func easing(easing : FAEasing) -> PropertyAnimator
 	func primary(primary : Bool) -> PropertyAnimator
@@ -138,11 +138,11 @@ Once the function call exits the closure, **FlightAnimator** performs the follow
 
 Chaining animations together in FlightAnimator is simple. 
 
-#### Trigger on Start
+### Trigger on Start
 
 The animation created on the secondaryView is triggered once the the primaryView's animation begins.    	
          	
-```
+```swift
 	primaryView.animate { [unowned self] (animator) in
 		....
 		
@@ -152,11 +152,11 @@ The animation created on the secondaryView is triggered once the the primaryView
     }
 ```
 
-#### Trigger on Completion 
+### Trigger on Completion 
 
 The animation created on the secondaryView is triggered once the the primaryView's animation completes.
 
-```
+```swift
 	primaryView.animate { [unowned self] (animator) in
 		....
 		
@@ -166,11 +166,11 @@ The animation created on the secondaryView is triggered once the the primaryView
     }
 ```
 
-#### Time Progress Trigger
+### Time Progress Trigger
 
 The animation created on the secondaryView is triggered when the driving animation reaches the relative half way point in duration on the primaryView's animation.
 
-```
+```swift
 	primaryView.animate { [unowned self] (animator) in
 		....
 				
@@ -180,11 +180,11 @@ The animation created on the secondaryView is triggered when the driving animati
     }
 ```
 
-#### Value Progress Trigger
+### Value Progress Trigger
 
 The animation created on the secondaryView is triggered when the driving animation reaches the relative half way point between the fromValue and toValue of the primaryView's animation. This is driven 
 
-```
+```swift
 	primaryView.animate { [unowned self] (animator) in
 		....
 		
@@ -194,12 +194,12 @@ The animation created on the secondaryView is triggered when the driving animati
     }
 ```
 
-#### Nesting Animation Triggers
+### Nesting Animation Triggers
 
 There is built in support for nesting triggers within triggers to sequence animations, and attach multiple types of triggers relative to the scope of the parent animation.
 
 
-```
+```swift
 	primaryView.animate { [unowned self] (animator) in
 		....
 		
@@ -225,11 +225,11 @@ There is built in support for nesting triggers within triggers to sequence anima
 	}
 ```
 
-#### CAAnimationDelegate Callbacks
+### CAAnimationDelegate Callbacks
 
 Sometimes there is a need to perform some logic on the start of an animation, or the end of the animation by responding to the CAAnimationDelegate methods
 
-```
+```swift
 view.animate { (animator) in
     ....
     
