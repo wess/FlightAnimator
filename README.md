@@ -12,14 +12,11 @@
 
 ##Introduction
 
-`FlightAnimator` provides a very simple blocks based definition language that allows you to create, configure, cache, and reuse property animations dynamically. Quickly create, group, sequence, and apply individual easing curves per property, then watch as FlightAnimator synchronizes the animation to create a little magic. 
+FlightAnimator provides a very simple blocks based animation definition language that allows you to dynamically create, configure, group, sequence, cache, and reuse property animations.
 
-<br>
-
-Check out the [FlightAnimato Project Demo](#demoApp) to experiment with all the different capabilities of FlightAnimator.
+Unlike `CAAnimationGroups`, and `UIViewAnimations`, which animate multiple properties using a single easing curve, **FlightAnimator** allows configuration, and synchronization, of unique easing curves per individual property animation.
 
 ##Features
-
 
 - [x] [46+ Parametric Curves, Decay, and Springs](/Documentation/parametric_easings.md) 
 - [x] Blocks Syntax for Building Complex Animations
@@ -28,9 +25,8 @@ Check out the [FlightAnimato Project Demo](#demoApp) to experiment with all the 
 - [x] Advanced Multi-Curve Group Synchronization
 - [x] Define, Cache, and Reuse Animations
 
-<br>
 
-Check out the [FlightAnimato Project Demo](#demoApp) in the video below to experiment <br>with all the different capabilities of the **FlightAnimator** framework.
+Check out the [FlightAnimato Project Demo](#demoApp) in the video below to <br> experiment with all the different capabilities of the **FlightAnimator**.
 
 <p align=left>
 <a href="http://www.youtube.com/watch?feature=player_embedded&v=8XyH5mpfoC8&vq=hd1080
@@ -53,21 +49,13 @@ alt="FlightAnimatore Demo" border="0" /> </a>
 
 ##Basic Use 
 
+**FlightAnimator** provides a very flexible syntax for defining animations ranging in complexity with ease. Following a blocks based builder approach you can easily define an animation group, and it's property animations in no time. 
+
+Under the hood animations built are `CAAnimationGroup`(s) with multiple custom `CAKeyframeAnimation`(s) defined uniquely per property. Once it's time to animate, **FlightAnimator** will dynamically synchronize the remaining progress for all the animations relative to the current presentationLayer's values, then continue to animate to it's final state.
+
 ###Simple Animation
 
-Imagine the following animation definition which defines a `CAAnimationGroup` to group with two `CABasicAnimations`, one for position, and bounds for the other. 
-
-Calling `animate(:)` on the **view** begins the `FAAnimationGroup` creation process.
-
-```
-	view.animate {  [unowned self] (animator) in
-	    animator.alpha(toAlpha).duration(0.5).easing(.OutCubic)
-		animator.bounds(toBounds).duration(0.5).easing(.OutCubic)
-      	animator.position(toPosition).duration(0.5).easing(.OutCubic)
-	}
-```
-
-Below is the `CoreAnimation` equivalent for the animation defined above using **FlightAnimator**
+To really see the power of **FlightAnimator**, let's first start by defining an animation using `CoreAnimation`, then re-define it using the framework's blocks based syntax. The animation below uses a `CAAnimationGroup` to group 3 individual `CABasicAnimations` for alpha, bounds, and position. 
 
 ```
 	let alphaAnimation 						= CABasicAnimation(keyPath: "position")
@@ -96,10 +84,17 @@ Below is the `CoreAnimation` equivalent for the animation defined above using **
 	view.layer.addAnimation(animationGroup, forKey: "PositionAnimationKey")
 	view.frame = toFrame
 ```
+Now that we saw the example above. Let's re-define **FlightAnimator**'s blocks based syntax
 
+```
+	view.animate {  [unowned self] (animator) in
+	    animator.alpha(toAlpha).duration(0.5).easing(.OutCubic)
+		animator.bounds(toBounds).duration(0.5).easing(.OutCubic)
+      	animator.position(toPosition).duration(0.5).easing(.OutCubic)
+	}
+```
 
-
-Inside the closure the **animator** creates, configures, then appends custom animations to the newly created parent group. Define each individual property animation by calling one of the pre-defined property setters, or use `func value(:, forKeyPath:) -> PropertyAnimator` for **any** other animatable property.
+Calling `animate(:)` on the **view** begins the `FAAnimationGroup` creation process. Inside the closure the **animator** creates, configures, then appends custom animations to the newly created parent group. Define each individual property animation by calling one of the pre-defined property setters, or use `func value(:, forKeyPath:) -> PropertyAnimator` for **any** other animatable property.
 
 
 ```
@@ -133,7 +128,7 @@ Once the property animation is initiated, recursively configure the `PropertyAni
 	func primary(primary : Bool) -> PropertyAnimator
 ```
 
-Once the function call exits the closure, `**FlightAnimator** performs the following:
+Once the function call exits the closure, **FlightAnimator** performs the following:
 
 1. Adds the newly created `FAAnimationGroup` to the calling **view**'s layer, 
 2. Synchronizes the grouped `FABasicAnimations` relative to the calling **view**'s presentation layer values
