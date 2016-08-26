@@ -14,7 +14,31 @@
 
 `FlightAnimator` provides a very simple blocks based definition language that allows you to create, configure, cache, and reuse property animations dynamically. Quickly create, group, sequence, and apply individual easing curves per property, then watch as FlightAnimator synchronizes the animation to create a little magic. 
 
+<br>
+
+Check out the [FlightAnimato Project Demo](#demoApp) to experiment with all the different capabilities of FlightAnimator.
+
 ##Features
+<table>
+  <tbody>
+    <tr>
+      	<td>
+       		- [x] [46+ Parametric Curves, Decay, and Springs](/Documentation/parametric_easings.md)
+       		<br>- [x] Blocks Syntax for Building Complex Animations
+       		<br>- [x] Chain and Sequence Animations 
+			<br>- [x] Apply Unique Easing per Property Animation
+			<br>- [x] Advanced Multi-Curve Group Synchronization
+			<br>- [x] Define, Cache, and Reuse Animations
+</td>
+      	<td>
+<a href="http://www.youtube.com/watch?feature=player_embedded&v=8XyH5mpfoC8&vq=hd1080
+" target="_blank"><img src="http://img.youtube.com/vi/8XyH5mpfoC8/0.jpg" 
+alt="FlightAnimatore Demo" border="0" width=350 height=260/></a>
+</td>
+    </tr>
+   </tbody>
+</table>
+
 
 - [x] [46+ Parametric Curves, Decay, and Springs](/Documentation/parametric_easings.md) 
 - [x] Blocks Syntax for Building Complex Animations
@@ -48,45 +72,51 @@ alt="FlightAnimatore Demo" border="0" /></a>
 
 ##Basic Use 
 
-Check out the [Framework Demo App](#demoApp) to experiment with all the different capabilities of FlightAnimator.
-
 ###Simple Animation
 
-Imagine the following animation definition using `CoreAnimation`, which defines a `CAAnimationGroup` to group two `CABasicAnimations`, one for position, bounds for the other.
+Imagine the following animation definition which defines a `CAAnimationGroup` to group with two `CABasicAnimations`, one for position, and bounds for the other. 
+
+Calling `animate(:)` on the **view** begins the `FAAnimationGroup` creation process.
 
 ```
-	let positionAnimation 					= CABasicAnimation(keyPath: "position")
-	positionAnimation.duration 				= 0.5
-	positionAnimation.toValue 				= NSValue(CGPoint : toPosition)
-	positionAnimation.fromValue 			= NSValue(CGPoint : view.layer.position)
-	positionAnimation.fillMode              = kCAFillModeForwards
-	positionAnimation.timingFunction        = CAMediaTimingFunction(name:kCAMediaTimingFunctionEaseOut)
+	view.animate {  [unowned self] (animator) in
+	    animator.alpha(toAlpha).duration(0.5).easing(.OutCubic)
+		animator.bounds(toBounds).duration(0.5).easing(.OutCubic)
+      	animator.position(toPosition).duration(0.5).easing(.OutCubic)
+	}
+```
+
+Below is the `CoreAnimation` equivalent for the animation defined above using **FlightAnimator**
+
+```
+	let alphaAnimation 						= CABasicAnimation(keyPath: "position")
+	alphaAnimation.toValue 					= 0.0
+	alphaAnimation.fromValue 				= 1.0
+	alphaAnimation.fillMode              	= kCAFillModeForwards
+	alphaAnimation.timingFunction        	= CAMediaTimingFunction(name:kCAMediaTimingFunctionEaseOut)
 
 	let boundsAnimation 					= CABasicAnimation(keyPath: "bounds")
-	boundsAnimation.duration 				= 0.5
 	boundsAnimation.toValue 				= NSValue(CGRect : toBounds)
 	boundsAnimation.fromValue 				= NSValue(CGRect : view.layer.bounds)
 	boundsAnimation.fillMode              	= kCAFillModeForwards
 	boundsAnimation.timingFunction        	= CAMediaTimingFunction(name:kCAMediaTimingFunctionEaseOut)
 
+	let positionAnimation 					= CABasicAnimation(keyPath: "position")
+	positionAnimation.toValue 				= NSValue(CGPoint : toPosition)
+	positionAnimation.fromValue 			= NSValue(CGPoint : view.layer.position)
+	positionAnimation.fillMode              = kCAFillModeForwards
+	positionAnimation.timingFunction        = CAMediaTimingFunction(name:kCAMediaTimingFunctionEaseOut)
+
 	let animationGroup 						= CAAnimationGroup()
 	animationGroup.duration 				= 0.5
 	animationGroup.removedOnCompletion   	= true
-	animationGroup.animations 				= [positionAnimation, boundsAnimation]
+	animationGroup.animations 				= [alphaAnimation,  boundsAnimation, positionAnimation]
 
 	view.layer.addAnimation(animationGroup, forKey: "PositionAnimationKey")
 	view.frame = toFrame
 ```
 
-**FlightAnimator** allows for a **"swift like"** blocks based approach to define the equivalent of the animation above using technically 3 lines of code. Calling `animate(:)` on the **view** begins the `FAAnimationGroup` creation process.
 
-
-```
-	view.animate {  [unowned self] (animator) in
-		animator.bounds(toBounds).duration(0.5).easing(.OutCubic)
-      	animator.position(toPosition).duration(0.5).easing(.OutCubic)
-	}
-```
 
 Inside the closure the **animator** creates, configures, then appends custom animations to the newly created parent group. Define each individual property animation by calling one of the pre-defined property setters, or use `func value(:, forKeyPath:) -> PropertyAnimator` for **any** other animatable property.
 
@@ -132,7 +162,7 @@ Once the function call exits the closure, `**FlightAnimator** performs the follo
 
 Chaining animations together in FlightAnimator is simple. 
 
-######Trigger on Start
+#### Trigger on Start
 
 The animation created on the secondaryView is triggered once the the primaryView's animation begins.    	
          	
@@ -146,7 +176,7 @@ The animation created on the secondaryView is triggered once the the primaryView
     }
 ```
 
-###### Completion 
+#### Trigger on Completion 
 
 The animation created on the secondaryView is triggered once the the primaryView's animation completes.
 
@@ -160,7 +190,7 @@ The animation created on the secondaryView is triggered once the the primaryView
     }
 ```
 
-###### Time Progress 
+#### Time Progress Trigger
 
 The animation created on the secondaryView is triggered when the driving animation reaches the relative half way point in duration on the primaryView's animation.
 
@@ -174,7 +204,7 @@ The animation created on the secondaryView is triggered when the driving animati
     }
 ```
 
-###### Value Progress
+#### Value Progress Trigger
 
 The animation created on the secondaryView is triggered when the driving animation reaches the relative half way point between the fromValue and toValue of the primaryView's animation. This is driven 
 
@@ -188,7 +218,7 @@ The animation created on the secondaryView is triggered when the driving animati
     }
 ```
 
-###### Nesting Animation Triggers
+#### Nesting Animation Triggers
 
 There is built in support for nesting triggers within triggers to sequence animations, and attach multiple types of triggers relative to the scope of the parent animation.
 
@@ -219,7 +249,7 @@ There is built in support for nesting triggers within triggers to sequence anima
 	}
 ```
 
-###### Animation Delegate Callbacks
+#### CAAnimationDelegate Callbacks
 
 Sometimes there is a need to perform some logic on the start of an animation, or the end of the animation by responding to the CAAnimationDelegate methods
 
