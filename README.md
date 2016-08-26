@@ -12,10 +12,7 @@
 
 ##Introduction
 
-
-FlightAnimator is a natural animation engine built on top of CoreAnimation, and provides a very simple blocks based syntax to create, configure, cache, and reuse animations dynamically. 
-
-A unique feature toFlightAnimator is that you can group multiple animations, and apply different easing curves per property. FlightAnimator takes care of the rest to synchronize them accordingly to create some very interesting effects :)
+`FlightAnimator` provides a very simple blocks based definition language that allows you to create, configure, cache, and reuse property animations dynamically. Quickly create, group, sequence, and apply individual easing curves per property, then watch as FlightAnimator synchronizes the animation to create a little magic. 
 
 ##Features
 
@@ -51,40 +48,90 @@ alt="FlightAnimatore Demo" border="0" /></a>
 
 ##Basic Use 
 
-There are a many ways to use FlightAnimator as it provides a very flexible syntax for defining animations ranging in completexy with ease. Whether performing an animation, chaining animations, or registering/caching an animation, the framework follows a common blocks based builder approach to define property animations within an animation group. Each property animation, is configured with final value, and easing curve, and optionally the primary flag to adjust synchronization of the animations within a group when applied to the layer.
-
-Under the hood animations are built as CAAnimationGroup(s) with multiple custom CAKeyframeAnimation(s) defined uniquely per property. Once it's time to animate, FlightAnimator will dynamically synchronize the remaining progress for all the animations relative to the current presentationLayer's values, then continue to animate to it's final state.
-
 Check out the [Framework Demo App](#demoApp) to experiment with all the different capabilities of FlightAnimator.
 
 ###Simple Animation
 
-To perform a simple animation call the `animate(:)` method on the view to animate. Once the animator completes the creation process, the animation applies itself on it's own to the layer, and sets all the final layers values on the model layer.
+Imagine the following animation definition using `CoreAnimation`, which defines a `CAAnimationGroup` to group two `CABasicAnimations`, one for position, bounds for the other.
+
+```swift
+let positionAnimation 					= CABasicAnimation(keyPath: "position")
+positionAnimation.duration 				= 0.5
+positionAnimation.toValue 				= NSValue(CGPoint : toPosition)
+positionAnimation.fromValue 			= NSValue(CGPoint : view.layer.position)
+positionAnimation.fillMode              = kCAFillModeForwards
+positionAnimation.timingFunction        = CAMediaTimingFunction(name:kCAMediaTimingFunctionEaseOut)
+
+let boundsAnimation 					= CABasicAnimation(keyPath: "bounds")
+boundsAnimation.duration 				= 0.5
+boundsAnimation.toValue 				= NSValue(CGRect : toBounds)
+boundsAnimation.fromValue 				= NSValue(CGRect : view.layer.bounds)
+boundsAnimation.fillMode              	= kCAFillModeForwards
+boundsAnimation.timingFunction        	= CAMediaTimingFunction(name:kCAMediaTimingFunctionEaseOut)
+
+let animationGroup 						= CAAnimationGroup()
+animationGroup.duration 				= 0.5
+animationGroup.removedOnCompletion   	= true
+animationGroup.animations 				= [positionAnimation, boundsAnimation]
+
+view.layer.addAnimation(animationGroup, forKey: "PositionAnimationKey")
+view.frame = toFrame
+```
+
+`FlightAnimator` allows for a **"swift like"** blocks based approach to define the equivalent of the animation above using technically 3 lines of code.
 
 ```swift
 view.animate { (animator) in
-      animator.bounds(newBounds).duration(0.5).easing(.OutCubic)
-      animator.position(newPositon).duration(0.5).easing(.InSine)
+      animator.bounds(toBounds).duration(0.5).easing(.OutCubic)
+      animator.position(toPosition).duration(0.5).easing(.OutCubic)
 }
+
 ```
 
-The closure returns an instance FlightAnimator used to build a complex animation to perform one property at a time. Technically the animator creates a CGAnimationGroup under the hood to add individual animations to. Once inside the closure, the first step is to creating individual property animation with a destination value, then configure the duration, and easing curve accordingly.
-
-Methods on the FlightAnimator defined for every supported animatable property, but In the case there is a need to animate a custom defined NSManaged animatable property, i.e progress to draw a circle. Use the `value(value:forKeyPath:)` method on the animator to animate that property.
+Calling `animate(:)` on the **view** begins the `FAAnimationGroup` creation process. The **animator** instance creates, configures, and appends custom animations to the parent group. Initiare the creation of each individual animations by calling one of the predefined `FlightAnimator` property setters, or use the generic value forKeyPath for any other animatable property.
 
 ```swift
-view.animate { (animator) in
-    animator.value(value, forKeyPath : "progress").duration(0.5).easing(.OutCubic)    
-}
+/* Predefined */
+
+public func alpha(:) 				-> PropertyAnimator
+public func anchorPoint(:) 			-> PropertyAnimator
+public func backgroundColor(:) 		-> PropertyAnimator
+public func bounds(:) 				-> PropertyAnimator
+public func borderColor(:) 			-> PropertyAnimator
+public func borderWidth(:) 			-> PropertyAnimator
+public func contentsRect(:) 		-> PropertyAnimator
+public func cornerRadius(:) 		-> PropertyAnimator
+public func opacity(:) 				-> PropertyAnimator
+public func position(:) 			-> PropertyAnimator
+public func shadowColor(:) 			-> PropertyAnimator
+public func shadowOffset(:) 		-> PropertyAnimator
+public func shadowOpacity(:) 		-> PropertyAnimator
+public func shadowRadius(:) 		-> PropertyAnimator
+public func size(:) 				-> PropertyAnimator
+public func sublayerTransform(:) 	-> PropertyAnimator
+public func transform(:) 			-> PropertyAnimator
+public func zPosition(:) 			-> PropertyAnimator
+
+/* Generic  */
+
+public func value(:, forKeyPath:) 	-> PropertyAnimator
+ 
 ```
 
-Once you have created a property animation within the group, it recursively returns an instance of a `PropertyAnimator`, which allows for chaining the a duration, easing curve, or primary flag, documentated documented at a later point in the documentation. 
+Recursively configure the `PropertyAnimator` instance by chaining duration, easing, and/or primary designation to create the final `FABasicAnimation` for the parent group.
 
 ```swift
-func duration(duration : CGFloat) -> PropertyAnimationConfig
-func easing(easing : FAEasing) -> PropertyAnimationConfig
-func primary(primary : Bool) -> PropertyAnimationConfig
+func duration(duration : CGFloat) -> PropertyAnimator
+func easing(easing : FAEasing) -> PropertyAnimator
+func primary(primary : Bool) -> PropertyAnimator
 ```
+
+Once the function call exits the closure, `FlightAnimator` performs the following:
+
+1. Adds the animation group to the calling **view**'s layer, 
+2. Synchronizes the 2 custom `FABasicAnimations` relative to presentation layer values
+3. To trigger the animation, it applies all the final values of the grouped animations to the backing layer. 
+
 
 ###Animation Delegate Callbacks
 

@@ -111,8 +111,8 @@ public extension FlightAnimator  {
         return self.value(value, forKeyPath : "transform")
     }
     
-    public func animateZPosition(value : CGFloat) -> PropertyAnimator {
-        return self.value(value, forKeyPath : "animateZPosition")
+    public func zPosition(value : CGFloat) -> PropertyAnimator {
+        return self.value(value, forKeyPath : "zPosition")
     }
 }
 
