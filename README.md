@@ -28,11 +28,14 @@ Check out the [FlightAnimato Project Demo](#demoApp) to experiment with all the 
 - [x] Advanced Multi-Curve Group Synchronization
 - [x] Define, Cache, and Reuse Animations
 
+<br>
+
+Check out the [FlightAnimato Project Demo](#demoApp) in the video below to experiment <br>with all the different capabilities of the **FlightAnimator** framework.
 
 <p align=left>
 <a href="http://www.youtube.com/watch?feature=player_embedded&v=8XyH5mpfoC8&vq=hd1080
 " target="_blank"><img src="http://img.youtube.com/vi/8XyH5mpfoC8/0.jpg" 
-alt="FlightAnimatore Demo" border="0" /></a>
+alt="FlightAnimatore Demo" border="0" /> </a>
 </p>
 
 
