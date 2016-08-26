@@ -19,39 +19,17 @@
 Check out the [FlightAnimato Project Demo](#demoApp) to experiment with all the different capabilities of FlightAnimator.
 
 ##Features
-<table>
-  <tbody>
-    <tr>
-      	<td>
-       		- [x] [46+ Parametric Curves, Decay, and Springs](/Documentation/parametric_easings.md)
-       		<br>- [x] Blocks Syntax for Building Complex Animations
-       		<br>- [x] Chain and Sequence Animations 
-			<br>- [x] Apply Unique Easing per Property Animation
-			<br>- [x] Advanced Multi-Curve Group Synchronization
-			<br>- [x] Define, Cache, and Reuse Animations
-</td>
-      	<td>
-<a href="http://www.youtube.com/watch?feature=player_embedded&v=8XyH5mpfoC8&vq=hd1080
-" target="_blank"><img src="http://img.youtube.com/vi/8XyH5mpfoC8/0.jpg" 
-alt="FlightAnimatore Demo" border="0" width=350 height=260/></a>
-</td>
-    </tr>
-   </tbody>
-</table>
 
 
 - [x] [46+ Parametric Curves, Decay, and Springs](/Documentation/parametric_easings.md) 
 - [x] Blocks Syntax for Building Complex Animations
-- [x] Chain Animations:
-	* Synchronously 
-	* Time Progress Relative
-	* Value Progress Relative
+- [x] Chain and Sequence Animations:
 - [x] Apply Unique Easing per Property Animation
 - [x] Advanced Multi-Curve Group Synchronization
 - [x] Define, Cache, and Reuse Animations
 
 
-<p align=center>
+<p align=left>
 <a href="http://www.youtube.com/watch?feature=player_embedded&v=8XyH5mpfoC8&vq=hd1080
 " target="_blank"><img src="http://img.youtube.com/vi/8XyH5mpfoC8/0.jpg" 
 alt="FlightAnimatore Demo" border="0" /></a>
@@ -60,7 +38,7 @@ alt="FlightAnimatore Demo" border="0" /></a>
 
 ##Installation
 
-* **Requirements** : XCode 7.3+, iOS 8.0+, tvOS 9.0+, osx 10.10+
+* **Requirements** : XCode 7.3+, iOS 8.0+, tvOS 9.0+
 * [Installation Instructions](/Documentation/installation.md)
 * [Release Notes](/Documentation/release_notes.md)
 
