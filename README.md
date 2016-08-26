@@ -54,183 +54,190 @@ Check out the [Framework Demo App](#demoApp) to experiment with all the differen
 
 Imagine the following animation definition using `CoreAnimation`, which defines a `CAAnimationGroup` to group two `CABasicAnimations`, one for position, bounds for the other.
 
-```swift
-let positionAnimation 					= CABasicAnimation(keyPath: "position")
-positionAnimation.duration 				= 0.5
-positionAnimation.toValue 				= NSValue(CGPoint : toPosition)
-positionAnimation.fromValue 			= NSValue(CGPoint : view.layer.position)
-positionAnimation.fillMode              = kCAFillModeForwards
-positionAnimation.timingFunction        = CAMediaTimingFunction(name:kCAMediaTimingFunctionEaseOut)
+```
+	let positionAnimation 					= CABasicAnimation(keyPath: "position")
+	positionAnimation.duration 				= 0.5
+	positionAnimation.toValue 				= NSValue(CGPoint : toPosition)
+	positionAnimation.fromValue 			= NSValue(CGPoint : view.layer.position)
+	positionAnimation.fillMode              = kCAFillModeForwards
+	positionAnimation.timingFunction        = CAMediaTimingFunction(name:kCAMediaTimingFunctionEaseOut)
 
-let boundsAnimation 					= CABasicAnimation(keyPath: "bounds")
-boundsAnimation.duration 				= 0.5
-boundsAnimation.toValue 				= NSValue(CGRect : toBounds)
-boundsAnimation.fromValue 				= NSValue(CGRect : view.layer.bounds)
-boundsAnimation.fillMode              	= kCAFillModeForwards
-boundsAnimation.timingFunction        	= CAMediaTimingFunction(name:kCAMediaTimingFunctionEaseOut)
+	let boundsAnimation 					= CABasicAnimation(keyPath: "bounds")
+	boundsAnimation.duration 				= 0.5
+	boundsAnimation.toValue 				= NSValue(CGRect : toBounds)
+	boundsAnimation.fromValue 				= NSValue(CGRect : view.layer.bounds)
+	boundsAnimation.fillMode              	= kCAFillModeForwards
+	boundsAnimation.timingFunction        	= CAMediaTimingFunction(name:kCAMediaTimingFunctionEaseOut)
 
-let animationGroup 						= CAAnimationGroup()
-animationGroup.duration 				= 0.5
-animationGroup.removedOnCompletion   	= true
-animationGroup.animations 				= [positionAnimation, boundsAnimation]
+	let animationGroup 						= CAAnimationGroup()
+	animationGroup.duration 				= 0.5
+	animationGroup.removedOnCompletion   	= true
+	animationGroup.animations 				= [positionAnimation, boundsAnimation]
 
-view.layer.addAnimation(animationGroup, forKey: "PositionAnimationKey")
-view.frame = toFrame
+	view.layer.addAnimation(animationGroup, forKey: "PositionAnimationKey")
+	view.frame = toFrame
 ```
 
-`FlightAnimator` allows for a **"swift like"** blocks based approach to define the equivalent of the animation above using technically 3 lines of code.
+**FlightAnimator** allows for a **"swift like"** blocks based approach to define the equivalent of the animation above using technically 3 lines of code. Calling `animate(:)` on the **view** begins the `FAAnimationGroup` creation process.
 
-```swift
+
+```
+	view.animate {  [unowned self] (animator) in
+		animator.bounds(toBounds).duration(0.5).easing(.OutCubic)
+      	animator.position(toPosition).duration(0.5).easing(.OutCubic)
+	}
+```
+
+Inside the closure the **animator** creates, configures, then appends custom animations to the newly created parent group. Define each individual property animation by calling one of the pre-defined property setters, or use `func value(:, forKeyPath:) -> PropertyAnimator` for **any** other animatable property.
+
+
+```
+	func alpha(:) 				-> PropertyAnimator
+	func anchorPoint(:) 		-> PropertyAnimator
+    func backgroundColor(:) 	-> PropertyAnimator
+    func bounds(:) 				-> PropertyAnimator
+    func borderColor(:) 		-> PropertyAnimator
+    func borderWidth(:) 		-> PropertyAnimator
+    func contentsRect(:) 		-> PropertyAnimator
+    func cornerRadius(:) 		-> PropertyAnimator     
+    func opacity(:) 			-> PropertyAnimator
+    func position(:) 			-> PropertyAnimator
+    func shadowColor(:) 		-> PropertyAnimator
+    func shadowOffset(:) 		-> PropertyAnimator
+    func shadowOpacity(:) 		-> PropertyAnimator
+    func shadowRadius(:) 		-> PropertyAnimator
+    func size(:) 				-> PropertyAnimator
+    func sublayerTransform(:) 	-> PropertyAnimator
+    func transform(:) 			-> PropertyAnimator
+    func zPosition(:) 			-> PropertyAnimator
+
+    func value(:, forKeyPath:) 	-> PropertyAnimator
+```
+
+Once the property animation is initiated, recursively configure the `PropertyAnimator` by chaining duration, easing, and/or primary designation, to create the final `FABasicAnimation`, and add it to the parent group.
+
+```
+	func duration(duration : CGFloat) -> PropertyAnimator
+	func easing(easing : FAEasing) -> PropertyAnimator
+	func primary(primary : Bool) -> PropertyAnimator
+```
+
+Once the function call exits the closure, `**FlightAnimator** performs the following:
+
+1. Adds the newly created `FAAnimationGroup` to the calling **view**'s layer, 
+2. Synchronizes the grouped `FABasicAnimations` relative to the calling **view**'s presentation layer values
+3. Triggers the animation by applying the **toValue** from the grouped animations to to the calling **view**'s layer. 
+
+##Chaining Animations
+
+Chaining animations together in FlightAnimator is simple. 
+
+######Trigger on Start
+
+The animation created on the secondaryView is triggered once the the primaryView's animation begins.    	
+         	
+```
+	primaryView.animate { [unowned self] (animator) in
+		....
+		
+    	animator.triggerOnStart(onView: self.secondaryView, animator: { (animator) in
+         	....
+    	})
+    }
+```
+
+###### Completion 
+
+The animation created on the secondaryView is triggered once the the primaryView's animation completes.
+
+```
+	primaryView.animate { [unowned self] (animator) in
+		....
+		
+    	animator.triggerOnCompletion(onView: self.secondaryView, animator: { (animator) in
+         	....
+    	})
+    }
+```
+
+###### Time Progress 
+
+The animation created on the secondaryView is triggered when the driving animation reaches the relative half way point in duration on the primaryView's animation.
+
+```
+	primaryView.animate { [unowned self] (animator) in
+		....
+				
+    	animator.triggerOnProgress(0.5, onView: self.secondaryView, animator: { (animator) in
+         	....
+    	})
+    }
+```
+
+###### Value Progress
+
+The animation created on the secondaryView is triggered when the driving animation reaches the relative half way point between the fromValue and toValue of the primaryView's animation. This is driven 
+
+```
+	primaryView.animate { [unowned self] (animator) in
+		....
+		
+    	animator.triggerOnValueProgress(0.5, onView: self.secondaryView, animator: { (animator) in
+         	....
+    	})
+    }
+```
+
+###### Nesting Animation Triggers
+
+There is built in support for nesting triggers within triggers to sequence animations, and attach multiple types of triggers relative to the scope of the parent animation.
+
+
+```
+	primaryView.animate { [unowned self] (animator) in
+		....
+		
+    	animator.triggerOnStart(onView: self.secondaryView, animator: { (animator) in
+         	-> Relative to primaryView animation
+         	 
+         	animator.triggerOnCompletion(onView: self.tertiaryView, animator: { (animator) in
+				-> Relative to secondaryView animation
+            
+            	animator.triggerOnProgress(0.5, onView: self.quaternaryView, animator: { (animator) in
+					-> Relative to tertiaryView animation
+    			})
+        	})
+        	
+        	animator.triggerOnValueProgress(0.5, onView: self.quinary, animator: { (animator) in
+         		-> Relative to secondaryView animation
+    		})
+    	})
+    	
+    	animator.triggerOnStart(onView: self.senaryView, animator: { (animator) in
+         	-> Relative to primaryView animation 
+    	})
+	}
+```
+
+###### Animation Delegate Callbacks
+
+Sometimes there is a need to perform some logic on the start of an animation, or the end of the animation by responding to the CAAnimationDelegate methods
+
+```
 view.animate { (animator) in
-      animator.bounds(toBounds).duration(0.5).easing(.OutCubic)
-      animator.position(toPosition).duration(0.5).easing(.OutCubic)
-}
-
-```
-
-Calling `animate(:)` on the **view** begins the `FAAnimationGroup` creation process. The **animator** instance creates, configures, and appends custom animations to the parent group. Initiare the creation of each individual animations by calling one of the predefined `FlightAnimator` property setters, or use the generic value forKeyPath for any other animatable property.
-
-```swift
-/* Predefined */
-
-public func alpha(:) 				-> PropertyAnimator
-public func anchorPoint(:) 			-> PropertyAnimator
-public func backgroundColor(:) 		-> PropertyAnimator
-public func bounds(:) 				-> PropertyAnimator
-public func borderColor(:) 			-> PropertyAnimator
-public func borderWidth(:) 			-> PropertyAnimator
-public func contentsRect(:) 		-> PropertyAnimator
-public func cornerRadius(:) 		-> PropertyAnimator
-public func opacity(:) 				-> PropertyAnimator
-public func position(:) 			-> PropertyAnimator
-public func shadowColor(:) 			-> PropertyAnimator
-public func shadowOffset(:) 		-> PropertyAnimator
-public func shadowOpacity(:) 		-> PropertyAnimator
-public func shadowRadius(:) 		-> PropertyAnimator
-public func size(:) 				-> PropertyAnimator
-public func sublayerTransform(:) 	-> PropertyAnimator
-public func transform(:) 			-> PropertyAnimator
-public func zPosition(:) 			-> PropertyAnimator
-
-/* Generic  */
-
-public func value(:, forKeyPath:) 	-> PropertyAnimator
- 
-```
-
-Recursively configure the `PropertyAnimator` instance by chaining duration, easing, and/or primary designation to create the final `FABasicAnimation` for the parent group.
-
-```swift
-func duration(duration : CGFloat) -> PropertyAnimator
-func easing(easing : FAEasing) -> PropertyAnimator
-func primary(primary : Bool) -> PropertyAnimator
-```
-
-Once the function call exits the closure, `FlightAnimator` performs the following:
-
-1. Adds the animation group to the calling **view**'s layer, 
-2. Synchronizes the 2 custom `FABasicAnimations` relative to presentation layer values
-3. To trigger the animation, it applies all the final values of the grouped animations to the backing layer. 
-
-
-###Animation Delegate Callbacks
-
-If there is a need to implement the CAAnimationDelegate, you can directly apply the callbacks on the animator instance during creation.
-
-```
-view.animate { (animator) in
-    animator.bounds(newBounds).duration(0.5).easing(.OutCubic)
-    animator.position(newPositon).duration(0.5).easing(.InSine)
+    ....
     
-    animator.setDidStartCallback({ (anim) in
+    animator.setDidStartCallback({ (animator) in
          // Animation Did Start
     })
     
-    animator.setDidStopCallback({ (anim, complete) in
+    animator.setDidStopCallback({ (animator, complete) in
          // Animation Did Stop   
     })
 }
 ```
 
-##Chaining Animations
-
-Chaining animations together in FlightAnimator is simple easy. You can nest animations using three different types triggers:
-
-* Simultaneously
-* Time Progress Based
-* Value Progress Based
- 
-These can be applied to the view being animated, or any other view accessible in the view heirarchy.
-
-####Trigger Simultaneously
-
-To trigger an animation right as the parent animation begins, attach a trigger on a parent animator by calling `animator.triggerOnStart(...)`. The trigger will perform the animation enclosed accordingly right as the parent begins animating. 
-
-```
-// Parent Animation Group
-view.animate { (animator) in
-	animator.bounds(newBounds).duration(0.5).easing(.EaseOutCubic)
-    animator.position(newPositon).duration(0.5).easing(.EaseOutCubic)
-    
-    // Child Animation Group, Triggered by Parent Group
-    animatortriggerOnStart(onView: self.secondaryView, animator: { (animator) in
-         animator.bounds(newSecondaryBounds).duration(0.5).easing(.OutCubic)
-         animator.position(newSecondaryCenter).duration(0.5).easing(.OutCubic)
-    })
-}
-```
-
-####Trigger On Completion
-
-To trigger an animation right as the parent animation completes, attach a trigger on a parent animator by calling `animator.triggerOnCompletion(...)`. The trigger will perform the animation enclosed accordingly right as the parent finishes relative to animation time. 
-
-```
-// Parent Animation Group
-view.animate { (animator) in
-	animator.bounds(newBounds).duration(0.5).easing(.EaseOutCubic)
-    animator.position(newPositon).duration(0.5).easing(.EaseOutCubic)
-    
-    // Child Animation Group, Triggered by Parent Group
-    animator.triggerOnComplete(onView: self.secondaryView, animator: { (animator) in
-         animator.bounds(newSecondaryBounds).duration(0.5).easing(.OutCubic)
-         animator.position(newSecondaryCenter).duration(0.5).easing(.OutCubic)
-    })
-}
-```
-
-####Trigger Relative to Time Progress
-
-A time based trigger will apply the next animation based on the progressed time of the overall parent animation. The progress value is defined with a range from 0.0 - 1.0, if the over all time of an animation is 1.0 second, by setting the atProgress paramter to 0.5, will trigger the animation at the 0.5 seconds into the parent animation. 
-
-Below is an examples that will trigger the second animation at the halfway point in time of the parent animation by calling `triggerAtTimeProgress(...)`
-
-```swift
-view.animate { (animator) in
-	animator.bounds(newBounds).duration(0.5).easing(.OutCubic)
-    animator.position(newPositon).duration(0.5).easing(.OutCubic)
-    
-    animator.triggerOnProgress(0.5, onView: self.secondaryView, animator: { (animator) in
-         animator.bounds(newSecondaryBounds).duration(0.5).easing(.OutCubic)
-         animator.position(newSecondaryCenter).duration(0.5).easing(.OutCubic)
-    })
-}
-```
-
-####Trigger Relative to Value Progress
-
-A value based progress trigger will apply the next animation based on the value progress of the overall parent animation. Below is an examples that will trigger the second animation at the halfway point of the value progress on the parent animation by calling `animator.triggerAtValueProgress(...)`
-
-```swift
-view.animate { (animator) in
-	animator.bounds(newBounds).duration(0.5).easing(.EaseOutCubic)
-    animator.position(newPositon).duration(0.5).easing(.EaseOutCubic)
-    
-    animator.triggerOnValueProgress(atProgress: 0.5, onView: self.secondaryView, animator: { (animator) in
-         animator.bounds(newSecondaryBounds).duration(0.5).easing(.OutCubic)
-         animator.position(newSecondaryCenter).duration(0.5).easing(.OutCubic)
-    })
-}
-```
+These can be nested just as the animation triggers, and be applied animator on the group in scope of the animation creation closure by the animator.
 
 ##Cache & Reuse Animations
 
