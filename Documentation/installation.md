@@ -3,8 +3,14 @@
 ###Manual Install
 
 1. Clone the [FlightAnimator](git@github.com:AntonTheDev/flight-animator.git) repository 
-2. Add the contents of the Source Directory to the project
+2. Init pull the latest CoreFlightAnimation Framework Sub module 
 
+ 	``` 
+ 	git submodule update --init --recursive 
+	 ``
+3. Add the contents of  ***/FlightAnimator/Source*** directory to the project
+4. Add the contents of ***/Submodules/FlightAnimator/Source*** directory
+****
 ###CocoaPods
 
 1. Edit the project's podfile, and save
