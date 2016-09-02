@@ -5,7 +5,7 @@ Pod::Spec.new do |s|
   s.homepage     = "https://github.com/AntonTheDev/FlightAnimator/"
   s.license      = 'MIT'
   s.author       = { "Anton Doudarev" => "antonthedev@gmail.com" }
-  s.source       = { :git => 'https://github.com/AntonTheDev/FlightAnimator.git', :tag => s.version }
+  s.source       = { :git => 'https://github.com/AntonTheDev/FlightAnimator.git', :tag => s.version,  :submodules => true }
   
 
   s.platform     = :ios, "8.0"
