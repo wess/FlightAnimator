@@ -8,8 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		13009CED1D0B90C4008419C8 /* FlightAnimator.h in Headers */ = {isa = PBXBuildFile; fileRef = 13009CEC1D0B90C4008419C8 /* FlightAnimator.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		13E61E091D7A1B8D00999649 /* CoreFlightAnimation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 13E61DFF1D79FFB500999649 /* CoreFlightAnimation.framework */; };
-		13E61E0A1D7A1B9100999649 /* CoreFlightAnimation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 13E61E011D7A000A00999649 /* CoreFlightAnimation.framework */; };
+		13E61E001D79FFB500999649 /* CoreFlightAnimation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 13E61DFF1D79FFB500999649 /* CoreFlightAnimation.framework */; };
+		13E61E021D7A000A00999649 /* CoreFlightAnimation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 13E61E011D7A000A00999649 /* CoreFlightAnimation.framework */; };
 		3A742D991D2F3D2E008E555E /* FlightAnimator.h in Headers */ = {isa = PBXBuildFile; fileRef = 13009CEC1D0B90C4008419C8 /* FlightAnimator.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		3AE43A7D1D7969AE00AD522C /* FlightAnimationMaker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AE43A7B1D7969AE00AD522C /* FlightAnimationMaker.swift */; };
 		3AE43A7E1D7969AE00AD522C /* FlightAnimationMaker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AE43A7B1D7969AE00AD522C /* FlightAnimationMaker.swift */; };
@@ -32,7 +32,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				13E61E091D7A1B8D00999649 /* CoreFlightAnimation.framework in Frameworks */,
+				13E61E001D79FFB500999649 /* CoreFlightAnimation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -40,7 +40,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				13E61E0A1D7A1B9100999649 /* CoreFlightAnimation.framework in Frameworks */,
+				13E61E021D7A000A00999649 /* CoreFlightAnimation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

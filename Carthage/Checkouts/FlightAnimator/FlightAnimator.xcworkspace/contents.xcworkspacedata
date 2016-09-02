@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Workspace
+   version = "1.0">
+   <FileRef
+      location = "group:Carthage/Checkouts/CoreFlightAnimation/CoreFlightAnimation/CoreFlightAnimation/CoreFlightAnimation.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:FlightAnimator-Demo/FlightAnimator-Demo.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:FlightAnimator/FlightAnimator.xcodeproj">
+   </FileRef>
+   <Group
+      location = "container:"
+      name = "Source">
+      <Group
+         location = "container:"
+         name = "FlightAnimator">
+         <FileRef
+            location = "group:Source/FlightAnimator.swift">
+         </FileRef>
+         <FileRef
+            location = "group:Source/FlightAnimationMaker.swift">
+         </FileRef>
+      </Group>
+   </Group>
+</Workspace>
