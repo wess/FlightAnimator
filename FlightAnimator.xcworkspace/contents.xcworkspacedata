@@ -5,10 +5,10 @@
       location = "group:Carthage/Checkouts/CoreFlightAnimation/CoreFlightAnimation/CoreFlightAnimation/CoreFlightAnimation.xcodeproj">
    </FileRef>
    <FileRef
-      location = "group:FlightAnimator-Demo/FlightAnimator-Demo.xcodeproj">
+      location = "group:FlightAnimator/FlightAnimator.xcodeproj">
    </FileRef>
    <FileRef
-      location = "group:FlightAnimator/FlightAnimator.xcodeproj">
+      location = "group:FlightAnimator-Demo/FlightAnimator-Demo.xcodeproj">
    </FileRef>
    <Group
       location = "container:"
