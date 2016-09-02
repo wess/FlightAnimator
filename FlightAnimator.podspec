@@ -7,12 +7,9 @@ Pod::Spec.new do |s|
   s.author       = { "Anton Doudarev" => "antonthedev@gmail.com" }
   s.source       = { :git => 'https://github.com/AntonTheDev/FlightAnimator.git', :branch => 'dev' }
 
-  s.dependency 'CoreFlightAnimation', :git => 'https://github.com/AntonTheDev/FlightAnimatort.git', :branch => 'dev'
-  
   s.platform     = :ios, "8.0"
   s.platform     = :tvos, "9.0"
 
-  
   s.ios.deployment_target = '8.0'
   s.tvos.deployment_target = '9.0'
  
