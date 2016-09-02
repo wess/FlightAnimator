@@ -1,2 +1,0 @@
-#CoreFlightAnimation
-github "https://github.com/AntonTheDev/CoreFlightAnimation.git" "dev"
