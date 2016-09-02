@@ -9,7 +9,7 @@ Pod::Spec.new do |s|
 
   s.platform     = :ios, "8.0"
   s.platform     = :tvos, "9.0"
-
+  s.dependency 'CoreFlightAnimation', :git => 'https://github.com/AntonTheDev/CoreFlightAnimation.git', :branch => 'dev'
   s.ios.deployment_target = '8.0'
   s.tvos.deployment_target = '9.0'
  
