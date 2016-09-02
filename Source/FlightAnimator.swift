@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import CoreFlightAnimation
 
 internal let AutoAnimationKey =  "AutoAnimationKey"
 

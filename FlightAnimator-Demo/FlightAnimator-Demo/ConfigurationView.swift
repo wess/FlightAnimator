@@ -8,7 +8,8 @@
 
 import Foundation
 import UIKit
-
+import CoreFlightAnimation
+import FlightAnimator
 
 enum PropertyConfigType : Int {
     case Bounds

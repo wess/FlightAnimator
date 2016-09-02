@@ -2,16 +2,13 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "group:submodules/CoreFlightAnimation/CoreFlightAnimation/CoreFlightAnimationDemo/CoreFlightAnimation-Demo.xcodeproj">
+      location = "group:Carthage/Checkouts/CoreFlightAnimation/CoreFlightAnimation/CoreFlightAnimation/CoreFlightAnimation.xcodeproj">
    </FileRef>
    <FileRef
       location = "group:FlightAnimator-Demo/FlightAnimator-Demo.xcodeproj">
    </FileRef>
    <FileRef
       location = "group:FlightAnimator/FlightAnimator.xcodeproj">
-   </FileRef>
-   <FileRef
-      location = "group:submodules/CoreFlightAnimation/CoreFlightAnimation/CoreFlightAnimation/CoreFlightAnimation.xcodeproj">
    </FileRef>
    <Group
       location = "container:"
@@ -25,58 +22,6 @@
          <FileRef
             location = "group:Source/FlightAnimationMaker.swift">
          </FileRef>
-      </Group>
-      <Group
-         location = "group:submodules/CoreFlightAnimation/Source"
-         name = "CoreFlightAnimation">
-         <Group
-            location = "group:FAAnimation"
-            name = "FAAnimation">
-            <FileRef
-               location = "group:FABasicAnimation.swift">
-            </FileRef>
-            <FileRef
-               location = "group:FAAnimationGroup.swift">
-            </FileRef>
-            <FileRef
-               location = "group:FAAnimationSequence.swift">
-            </FileRef>
-            <FileRef
-               location = "group:FAAnimationSequenceType.swift">
-            </FileRef>
-         </Group>
-         <Group
-            location = "group:FAInterpolation"
-            name = "FAInterpolation">
-            <FileRef
-               location = "group:FAEasing.swift">
-            </FileRef>
-            <FileRef
-               location = "group:FAInterpolator.swift">
-            </FileRef>
-            <FileRef
-               location = "group:FASpring.swift">
-            </FileRef>
-            <FileRef
-               location = "group:FAVector.swift">
-            </FileRef>
-         </Group>
-         <Group
-            location = "group:Extensions"
-            name = "Extensions">
-            <FileRef
-               location = "group:CAAnimation+CoreFlight.swift">
-            </FileRef>
-            <FileRef
-               location = "group:CALayer+CoreFlight.swift">
-            </FileRef>
-            <FileRef
-               location = "group:NSValue+CoreFlight.swift">
-            </FileRef>
-            <FileRef
-               location = "group:UIView+CoreFlight.swift">
-            </FileRef>
-         </Group>
       </Group>
    </Group>
 </Workspace>

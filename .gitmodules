@@ -1,0 +1,3 @@
+[submodule "Carthage/Checkouts/CoreFlightAnimation"]
+	path = Carthage/Checkouts/CoreFlightAnimation
+	url = https://github.com/AntonTheDev/CoreFlightAnimation.git
