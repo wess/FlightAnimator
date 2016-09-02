@@ -38,8 +38,8 @@ public class FlightAnimationMaker {
         if let sequence = cachedSequences[sequenceKey!] {
             sequence.addSequenceFrame(withAnimation: newGroup, onView: associatedView!, atProgress: triggerProgress)
         } else {
-            let sequence = FASequence(onView: associatedView!, withAnimation: newGroup)
-            cachedSequences[sequenceKey!] = sequence
+            let sequence = FAAnimationSequence(onView: associatedView!, withAnimation: newGroup, forKey: animationKey)
+            cachedSequences[animationKey!] = sequence
         }
     }
     
@@ -86,8 +86,8 @@ public class PropertyAnimator  {
         return self
     }
     
-    public func easing(easing : FAEasing) -> PropertyAnimator {
-        self.easingCurve = easing
+    public func easing(easingCurve : FAEasing) -> PropertyAnimator {
+        self.easingCurve = easingCurve
         updateAnimation()
         return self
     }
@@ -105,7 +105,7 @@ public class PropertyAnimator  {
         
         if let animations = sequenceTrigger.triggeredAnimation?.animations {
             
-            let filteredAnimations = (animations as! [FABasicAnimation]).filter ({ $0.keyPath == self.keyPath }).first
+            let filteredAnimations = (animations as! [FABasicAnimation]).filter ({ $0.keyPath == keyPath }).first
             
             if let animation = filteredAnimations {
                 

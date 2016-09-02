@@ -14,22 +14,26 @@ internal let AutoAnimationKey =  "AutoAnimationKey"
 public extension UIView {
     
     func animate(timingPriority : FAPrimaryTimingPriority = .MaxTime,
-                 @noescape animator : (animator : FlightAnimator) -> Void ) {
+                 @noescape animator : (a : FlightAnimator) -> Void ) {
         
         let animationKey = String(NSUUID().UUIDString)
 
         let newAnimator = FlightAnimator(withView: self, forKey : animationKey,  priority : timingPriority, sequenceKey : animationKey)
-        animator(animator : newAnimator)
+        animator(a : newAnimator)
     
         cachedSequences[animationKey]?.startSequence()
     }
     
     func cacheAnimation(forKey key: String,
-                               timingPriority : FAPrimaryTimingPriority = .MaxTime,
-                               @noescape animator : (animator : FlightAnimator) -> Void ) {
-        cachedSequences[key] = FASequence()
+                        timingPriority : FAPrimaryTimingPriority = .MaxTime,
+                        @noescape animator : (a : FlightAnimator) -> Void ) {
+        
+        let triggerAnimation = FAAnimationGroup()
+        triggerAnimation.weakLayer = layer
+        triggerAnimation.animationKey = key
+        
         let newAnimator = FlightAnimator(withView: self, forKey : key, priority : timingPriority, sequenceKey : key)
-        animator(animator : newAnimator)
+        animator(a : newAnimator)
     }
 }
 
@@ -50,7 +54,7 @@ public class FlightAnimator : FlightAnimationMaker {
                                                                    animationKey: animationKey!,
                                                                    sequenceKey: sequenceKey!)
         }
-    
+        
         return animationConfigurations[key]!
     }
     
@@ -111,7 +115,7 @@ public class FlightAnimator : FlightAnimationMaker {
     }
     
     public func size(value : CGSize) -> PropertyAnimator {
-        return bounds(CGRectMake(0, 0, value.width, value.height))
+        return self.bounds(CGRectMake(0, 0, value.width, value.height))
     }
     
     public func sublayerTransform(value : CATransform3D) -> PropertyAnimator {

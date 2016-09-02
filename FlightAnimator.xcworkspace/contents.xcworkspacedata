@@ -1,79 +1,82 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Workspace
    version = "1.0">
+   <FileRef
+      location = "group:FlightAnimator-Demo/FlightAnimator-Demo.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:/Users/adoudarev/Developer/personal/FlightAnimator/Source/CoreFlightAnimation/CoreFlightAnimation/CoreFlightAnimationDemo/CoreFlightAnimation-Demo.xcodeproj">
+   </FileRef>
    <Group
-      location = "group:Source/FlightAnimator"
-      name = "FlightAnimator">
-      <FileRef
-         location = "group:/Users/adoudarev/Developer/personal/FlightAnimator/Source/FlightAnimator/FlightAnimator.swift">
-      </FileRef>
-      <FileRef
-         location = "group:/Users/adoudarev/Developer/personal/FlightAnimator/Source/FlightAnimator/FlightAnimationMaker.swift">
-      </FileRef>
-   </Group>
-   <Group
-      location = "group:Source/CoreFlightAnimation/Source"
+      location = "container:"
       name = "Source">
       <Group
-         location = "group:FASequence"
-         name = "FASequence">
+         location = "container:"
+         name = "FlightAnimator">
          <FileRef
-            location = "group:FASequence.swift">
+            location = "group:Source/FlightAnimationMaker.swift">
          </FileRef>
          <FileRef
-            location = "group:FASequenceFrame.swift">
-         </FileRef>
-      </Group>
-      <Group
-         location = "group:FAAnimation"
-         name = "FAAnimation">
-         <FileRef
-            location = "group:FAAnimationGroup.swift">
-         </FileRef>
-         <FileRef
-            location = "group:FABasicAnimation.swift">
+            location = "group:Source/FlightAnimator.swift">
          </FileRef>
       </Group>
       <Group
-         location = "group:FAInterpolation"
-         name = "FAInterpolation">
-         <FileRef
-            location = "group:FAEasing.swift">
-         </FileRef>
-         <FileRef
-            location = "group:FAInterpolator.swift">
-         </FileRef>
-         <FileRef
-            location = "group:FASpring.swift">
-         </FileRef>
-         <FileRef
-            location = "group:FAVector.swift">
-         </FileRef>
-      </Group>
-      <Group
-         location = "group:Extensions"
-         name = "Extensions">
-         <FileRef
-            location = "group:CAAnimation+FAAnimator.swift">
-         </FileRef>
-         <FileRef
-            location = "group:CALayer+FAAnimator.swift">
-         </FileRef>
-         <FileRef
-            location = "group:NSValue+FAAnimator.swift">
-         </FileRef>
-         <FileRef
-            location = "group:UIView+FAAnimator.swift">
-         </FileRef>
+         location = "container:"
+         name = "CoreFlightAnimation">
+         <Group
+            location = "group:Source/CoreFlightAnimation/Source/FAAnimation"
+            name = "FAAnimation">
+            <FileRef
+               location = "group:FABasicAnimation.swift">
+            </FileRef>
+            <FileRef
+               location = "group:FAAnimationGroup.swift">
+            </FileRef>
+            <FileRef
+               location = "group:FAAnimationSequence.swift">
+            </FileRef>
+            <FileRef
+               location = "group:FAAnimationSequenceType.swift">
+            </FileRef>
+         </Group>
+         <Group
+            location = "group:Source/CoreFlightAnimation/Source/FAInterpolation"
+            name = "FAInterpolation">
+            <FileRef
+               location = "group:FAEasing.swift">
+            </FileRef>
+            <FileRef
+               location = "group:FAInterpolator.swift">
+            </FileRef>
+            <FileRef
+               location = "group:FASpring.swift">
+            </FileRef>
+            <FileRef
+               location = "group:FAVector.swift">
+            </FileRef>
+         </Group>
+         <Group
+            location = "group:Source/CoreFlightAnimation/Source/Extensions"
+            name = "Extensions">
+            <FileRef
+               location = "group:/Users/adoudarev/Developer/personal/FlightAnimator/Source/CoreFlightAnimation/Source/Extensions/CAAnimation+CoreFlight.swift">
+            </FileRef>
+            <FileRef
+               location = "group:/Users/adoudarev/Developer/personal/FlightAnimator/Source/CoreFlightAnimation/Source/Extensions/CALayer+CoreFlight.swift">
+            </FileRef>
+            <FileRef
+               location = "group:/Users/adoudarev/Developer/personal/FlightAnimator/Source/CoreFlightAnimation/Source/Extensions/NSValue+CoreFlight.swift">
+            </FileRef>
+            <FileRef
+               location = "group:/Users/adoudarev/Developer/personal/FlightAnimator/Source/CoreFlightAnimation/Source/Extensions/UIView+CoreFlight.swift">
+            </FileRef>
+         </Group>
       </Group>
    </Group>
    <FileRef
       location = "group:FlightAnimator/FlightAnimator.xcodeproj">
    </FileRef>
    <FileRef
-      location = "group:FlightAnimator-Demo/FlightAnimator-Demo.xcodeproj">
-   </FileRef>
-   <FileRef
-      location = "group:/Users/adoudarev/Developer/personal/FlightAnimator/Source/CoreFlightAnimation/CoreFlightAnimation/CoreFlightAnimationDemo/CoreFlightAnimation-Demo.xcodeproj">
+      location = "group:Source/CoreFlightAnimation/CoreFlightAnimation/CoreFlightAnimation/CoreFlightAnimation.xcodeproj">
    </FileRef>
 </Workspace>
