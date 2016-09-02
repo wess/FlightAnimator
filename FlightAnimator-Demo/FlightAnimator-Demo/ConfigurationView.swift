@@ -8,7 +8,7 @@
 
 import Foundation
 import UIKit
-import FlightAnimator
+
 
 enum PropertyConfigType : Int {
     case Bounds
@@ -65,7 +65,11 @@ class ConfigurationView : UIView {
     weak var cellDelegate : CurveCollectionViewCellDelegate?
    
     var selectedIndex: NSIndexPath = NSIndexPath(forRow: 0, inSection: 0)
+    
     var initialCenter = CGPointZero
+    var adjustedPosition = CGPointZero
+    var lastSelectedDelaySegment : Int = 0
+    
     var propertyConfigType : PropertyConfigType = PropertyConfigType.Bounds {
         didSet {
             self.contentCollectionView.reloadData()
@@ -185,8 +189,9 @@ class ConfigurationView : UIView {
                                              vertical: HGVerticalAlign.Below,
                                              verticalOffset : 40)
         
-        var adjustedPosition = enableSecondaryViewLabel.center
-        adjustedPosition.y =  adjustedPosition.y + 14
+        initialCenter =  enableSecondaryViewLabel.center
+        adjustedPosition = enableSecondaryViewLabel.center
+        adjustedPosition.y =  adjustedPosition.y + 16
         
         enableSecondaryViewLabel.center = adjustedPosition
     }
@@ -330,56 +335,10 @@ class ConfigurationView : UIView {
     }
     
     func changedTrigger(segmentedControl : UISegmentedControl) {
-        
+
         self.interactionDelegate?.didUpdateTriggerType(segmentedControl.selectedSegmentIndex)
-        
-        if segmentedControl.selectedSegmentIndex == 0 {
-           
-            var adjustedPosition = enableSecondaryViewLabel.center
-            adjustedPosition.y =  adjustedPosition.y + 16
-        
-            atProgressLabel.animate { (animator) in
-                animator.alpha(0.0).duration(0.5).easing(.OutSine)
-                
-                animator.triggerOnProgress(0.01, onView: self.progressLabel, animator: { (animator) in
-                    animator.alpha(0.0).duration(0.5).easing(.OutSine)
-                })
-                
-                animator.triggerOnProgress(0.7, onView: self.enableSecondaryViewLabel, animator: { (animator) in
-                    animator.position(adjustedPosition).duration(0.5).easing(.InSine)
-                })
-                
-                animator.triggerOnProgress(0.1, onView: self.progressTriggerSlider, animator: { (animator) in
-                    animator.alpha(0.0).duration(0.5).easing(.InSine)
-                })
-            }
-
-        } else  {
-
-            enableSecondaryViewLabel.animate { (animator) in
-                animator.position(self.initialCenter).duration(0.5).easing(.OutSine)
-                
-                animator.triggerOnProgress(0.61, onView: self.atProgressLabel, animator: { (animator) in
-                    animator.alpha(1.0).duration(0.5).easing(.OutSine)
-                })
-                
-                animator.triggerOnProgress(0.6, onView: self.progressLabel, animator: { (animator) in
-                    animator.alpha(1.0).duration(0.5).easing(.OutSine)
-                })
-                
-                animator.triggerOnProgress(0.7, onView: self.progressTriggerSlider, animator: { (animator) in
-                    animator.alpha(1.0).duration(0.5).easing(.OutSine)
-                })
-            }
-            
-            if segmentedControl.selectedSegmentIndex == 1 {
-                atProgressLabel.text = "Trigger @ Time Progress:  "
-            } else {
-                atProgressLabel.text = "Trigger @ Value Progress: "
-            }
-        }
-        
-        self.interactionDelegate?.selectedTimingPriority(FAPrimaryTimingPriority(rawValue: segmentedControl.selectedSegmentIndex)!)
+        updateAnimation()
+        //self.interactionDelegate?.selectedTimingPriority(FAPrimaryTimingPriority(rawValue: segmentedControl.selectedSegmentIndex)!)
     }
     
     

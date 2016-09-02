@@ -8,7 +8,7 @@
 
 import Foundation
 import UIKit
-import FlightAnimator
+
 
 /**
  *  This is used to keep track of the settings in the configuration screen
@@ -83,9 +83,9 @@ extension ViewController {
             animator.bounds(toBounds).duration(0.8).easing(.OutExponential)
             animator.position(toPosition).duration(0.8).easing(.OutExponential).primary(true)
            
-            animator.triggerOnStart(onView: self.dimmerView, animator: { (animator) in
+            animator.triggerOnProgress(0.5, onView: self.dimmerView, animator: {  (animator) in
                 animator.alpha(0.5).duration(0.8).easing(.OutExponential)
-                animator.backgroundColor(UIColor.blueColor().CGColor).duration(0.6).easing(.Linear)
+                animator.backgroundColor(UIColor.blackColor().CGColor).duration(0.6).easing(.Linear)
             })
         }
         
@@ -96,20 +96,21 @@ extension ViewController {
             
             animator.bounds(toBounds).duration(0.8).easing(.InOutExponential)
             animator.position(toPosition).duration(0.8).easing(.InOutExponential).primary(true)
-            
-            animator.triggerOnStart(onView: self.dimmerView, animator: {  (animator) in
+         
+            animator.triggerOnProgress(0.5, onView: self.dimmerView, animator: {  (animator) in
                 animator.alpha(0.0).duration(0.8).easing(.InOutExponential)
                 animator.backgroundColor(UIColor.clearColor().CGColor).duration(0.6).easing(.Linear)
             })
         }
+     
     }
     
     func tappedShowConfig() {
-        configView.applyAnimation(forKey: AnimationKeys.ShowConfigAnimation)
+        configView.applyCachedAnimation(forKey: AnimationKeys.ShowConfigAnimation)
     }
     
     func tappedCloseConfig() {
-        configView.applyAnimation(forKey: AnimationKeys.HideConfigAnimation)
+        configView.applyCachedAnimation(forKey: AnimationKeys.HideConfigAnimation)
     }
     
     func animateView(toFrame : CGRect,
@@ -209,7 +210,8 @@ extension ViewController {
         }
 
         let duration : CGFloat = 0.5
-        
+     
+     
         dragView.cacheAnimation(forKey : AnimationKeys.PanGestureKey, timingPriority: self.animConfig.primaryTimingPriority) {[unowned self]  (anim) in
             anim.bounds(finalBounds).duration(0.5).easing(.OutQuadratic).primary(false)
             anim.position(finalCenter).duration(0.6).easing(easingFunction).primary(true)
@@ -240,7 +242,9 @@ extension ViewController {
                 }
             }
         }
-        
-        dragView.applyAnimation(forKey: AnimationKeys.PanGestureKey)
+ 
+        dragView.applyCachedAnimation(forKey: AnimationKeys.PanGestureKey)
+ 
+
     }
 }

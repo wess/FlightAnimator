@@ -16,15 +16,24 @@ public extension UIView {
     func animate(timingPriority : FAPrimaryTimingPriority = .MaxTime,
                  @noescape animator : (animator : FlightAnimator) -> Void ) {
         
-        let animationKey = AutoAnimationKey
-        
-        let newAnimator = FlightAnimator(withView: self, forKey : animationKey,  priority : timingPriority)
+        let animationKey = String(NSUUID().UUIDString)
+
+        let newAnimator = FlightAnimator(withView: self, forKey : animationKey,  priority : timingPriority, sequenceKey : animationKey)
         animator(animator : newAnimator)
-        applyAnimation(forKey: animationKey)
+    
+        cachedSequences[animationKey]?.startSequence()
+    }
+    
+    func cacheAnimation(forKey key: String,
+                               timingPriority : FAPrimaryTimingPriority = .MaxTime,
+                               @noescape animator : (animator : FlightAnimator) -> Void ) {
+        cachedSequences[key] = FASequence()
+        let newAnimator = FlightAnimator(withView: self, forKey : key, priority : timingPriority, sequenceKey : key)
+        animator(animator : newAnimator)
     }
 }
 
-public extension FlightAnimator  {
+public class FlightAnimator : FlightAnimationMaker {
     
     public func value(value : Any, forKeyPath key : String) -> PropertyAnimator {
         
@@ -32,12 +41,14 @@ public extension FlightAnimator  {
             animationConfigurations[key] = PropertyAnimator(value: value.CGColor,
                                                                    forKeyPath: key,
                                                                    view : associatedView!,
-                                                                   animationKey: animationKey!)
+                                                                   animationKey: animationKey!,
+                                                                   sequenceKey: sequenceKey!)
         } else {
             animationConfigurations[key] = PropertyAnimator(value: value,
                                                                    forKeyPath: key,
                                                                    view : associatedView!,
-                                                                   animationKey: animationKey!)
+                                                                   animationKey: animationKey!,
+                                                                   sequenceKey: sequenceKey!)
         }
     
         return animationConfigurations[key]!
@@ -152,14 +163,14 @@ extension FlightAnimator {
 extension FlightAnimator {
     
     public func setDidStopCallback(stopCallback : FAAnimationDidStop) {
-        if ((associatedView?.cachedAnimations?.keys.contains(NSString(string: animationKey!))) != nil) {
-            associatedView!.cachedAnimations![NSString(string: animationKey!)]!.setDidStopCallback(stopCallback)
+        if cachedSequences.keys.contains(sequenceKey!) {
+            cachedSequences[sequenceKey!]?._sequenceTriggers[animationKey!]!.triggeredAnimation?.setDidStopCallback(stopCallback)
         }
     }
     
     public func setDidStartCallback(startCallback : FAAnimationDidStart) {
-        if ((associatedView?.cachedAnimations?.keys.contains(NSString(string: animationKey!))) != nil) {
-            associatedView!.cachedAnimations![NSString(string: animationKey!)]!.setDidStartCallback(startCallback)
+        if cachedSequences.keys.contains(sequenceKey!) {
+            cachedSequences[sequenceKey!]?._sequenceTriggers[animationKey!]!.triggeredAnimation?.setDidStartCallback(startCallback)
         }
     }
 }

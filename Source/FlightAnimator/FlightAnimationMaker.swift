@@ -9,39 +9,38 @@
 import Foundation
 import UIKit
 
-internal let DebugTriggerLogEnabled = false
-
-public class FlightAnimator {
+public class FlightAnimationMaker {
+    
+    internal var sequenceKey : String?
     
     internal weak var associatedView : UIView?
     internal var animationKey : String?
+    internal var triggerProgress: CGFloat = 0.0
     
     var animationConfigurations = [String : PropertyAnimator]()
     var primaryTimingPriority : FAPrimaryTimingPriority = .MaxTime
     
-    init(withView view : UIView, forKey key: String, priority : FAPrimaryTimingPriority = .MaxTime) {
+    public init(withView view : UIView, forKey key: String, priority : FAPrimaryTimingPriority = .MaxTime, progress: CGFloat = 0.0, sequenceKey seqkey : String?) {
         animationKey = key
         associatedView = view
+        triggerProgress =  progress
+        sequenceKey = seqkey
         primaryTimingPriority = priority
         configureNewGroup()
     }
     
     private func configureNewGroup() {
-        
-        if associatedView!.cachedAnimations == nil {
-            associatedView!.cachedAnimations = [NSString : FAAnimationGroup]()
-        }
-       
-        if associatedView!.cachedAnimations!.keys.contains(NSString(string: animationKey!)) {
-            associatedView!.cachedAnimations![NSString(string: animationKey!)]?.stopTriggerTimer()
-            associatedView!.cachedAnimations![NSString(string: animationKey!)] = nil
-        }
-        
         let newGroup = FAAnimationGroup()
         newGroup.configureAnimationGroup(withLayer: associatedView?.layer, animationKey: animationKey)
-        newGroup.primaryTimingPriority = primaryTimingPriority
+        newGroup.timingPriority = primaryTimingPriority
+        newGroup.animationKey = animationKey
         
-        associatedView!.cachedAnimations![NSString(string: animationKey!)] = newGroup
+        if let sequence = cachedSequences[sequenceKey!] {
+            sequence.addSequenceFrame(withAnimation: newGroup, onView: associatedView!, atProgress: triggerProgress)
+        } else {
+            let sequence = FASequence(onView: associatedView!, withAnimation: newGroup)
+            cachedSequences[sequenceKey!] = sequence
+        }
     }
     
     internal func triggerAnimation(timingPriority : FAPrimaryTimingPriority = .MaxTime,
@@ -50,30 +49,19 @@ public class FlightAnimator {
                                    progress: CGFloat = 0.0,
                                    @noescape animator: (animator : FlightAnimator) -> Void) {
 
-        let triggerKey = NSUUID().UUIDString
+        let frameKey = String(NSUUID().UUIDString)
         
-        if let animationGroup = associatedView!.cachedAnimations![NSString(string: animationKey!)] {
-            
-            let animationTrigger = AnimationTrigger()
-            animationTrigger.isTimedBased = timeBased
-            animationTrigger.triggerProgessValue = progress
-            animationTrigger.animationKey = triggerKey
-            animationTrigger.animatedView = view
-            
-            animationGroup._segmentArray.append(animationTrigger)
-
-            associatedView!.appendAnimation(animationGroup, forKey: animationKey!)
-        }
-        
-        let newAnimator = FlightAnimator(withView: view, forKey : triggerKey,  priority : timingPriority)
+        let newAnimator = FlightAnimator(withView: view, forKey : frameKey,  priority : timingPriority, progress : progress, sequenceKey : sequenceKey)
         animator(animator : newAnimator)
     }
 }
 
 public class PropertyAnimator  {
     
-    private weak var associatedView : UIView?
+    internal var sequenceKey : String?
     private var animationKey : String?
+    
+    private weak var associatedView : UIView?
     private var keyPath : String?
     
     var toValue : Any
@@ -81,19 +69,15 @@ public class PropertyAnimator  {
     var duration : CGFloat
     var primary : Bool
     
-    init(value: Any, forKeyPath key : String, view : UIView, animationKey : String) {
-        self.animationKey = animationKey
+    init(value: Any, forKeyPath key : String, view : UIView, animationKey animKey: String, sequenceKey seqKey : String) {
+        animationKey = animKey
+        sequenceKey = seqKey
         associatedView = view
         keyPath = key
         toValue = value
         easingCurve = .Linear
         duration = 0.0
         primary = false
-    }
-    
-    deinit {
-        associatedView = nil
-        //print ("DEINIT PropertyAnimationConfig")
     }
     
     public func duration(duration : CGFloat) -> PropertyAnimator {
@@ -115,15 +99,15 @@ public class PropertyAnimator  {
     }
     
     private func updateAnimation() {
-        guard let animationGroup = associatedView!.cachedAnimations![NSString(string: animationKey!)] else {
+        guard let sequenceTrigger = cachedSequences[sequenceKey!]?._sequenceTriggers[animationKey!] else {
             return
         }
         
-        if let animations = animationGroup.animations {
-            let animation = (animations as! [FABasicAnimation]).filter ({ $0.keyPath == self.keyPath }).first
+        if let animations = sequenceTrigger.triggeredAnimation?.animations {
             
-            if let animation = animation {
-                animation.easingFunction = easingCurve
+            let filteredAnimations = (animations as! [FABasicAnimation]).filter ({ $0.keyPath == self.keyPath }).first
+            
+            if let animation = filteredAnimations {
                 
                 if let currentValue = toValue as? CGPoint {
                     animation.toValue =  NSValue(CGPoint :currentValue)
@@ -141,15 +125,15 @@ public class PropertyAnimator  {
                 
                 animation.duration = Double(duration)
                 animation.isPrimary = primary
+                animation.easingFunction = easingCurve
                 
-                animationGroup.configureAnimationGroup(withLayer: associatedView?.layer, animationKey: animationKey)
-                animationGroup.animations!.append(animation)
+                sequenceTrigger.triggeredAnimation?.configureAnimationGroup(withLayer: associatedView?.layer, animationKey: animationKey)
+                sequenceTrigger.triggeredAnimation?.animations!.append(animation)
                 
-                associatedView!.cachedAnimations![NSString(string: animationKey!)] = animationGroup
+                cachedSequences[sequenceKey!]?._sequenceTriggers[animationKey!] = sequenceTrigger
                 return
             }
         }
-        
         
         let animation = FABasicAnimation(keyPath: keyPath)
         animation.easingFunction = easingCurve
@@ -170,9 +154,16 @@ public class PropertyAnimator  {
         
         animation.duration = Double(duration)
         animation.isPrimary = primary
-        animationGroup.configureAnimationGroup(withLayer: associatedView?.layer, animationKey: animationKey)
-        animationGroup.animations!.append(animation)
         
-        associatedView!.cachedAnimations![NSString(string: animationKey!)] = animationGroup
+        sequenceTrigger.triggeredAnimation?.configureAnimationGroup(withLayer: associatedView?.layer, animationKey: animationKey)
+        sequenceTrigger.triggeredAnimation?.animations!.append(animation)
+       
+        cachedSequences[sequenceKey!]?._sequenceTriggers[animationKey!] = sequenceTrigger
     }
 }
+
+
+
+
+
+

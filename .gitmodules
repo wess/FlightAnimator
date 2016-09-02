@@ -1,0 +1,3 @@
+[submodule "Source/CoreFlightAnimation"]
+	path = Source/CoreFlightAnimation
+	url = git@github.com:AntonTheDev/CoreFlightAnimation.git

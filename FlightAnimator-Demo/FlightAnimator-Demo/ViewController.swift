@@ -1,6 +1,5 @@
 import Foundation
 import UIKit
-import FlightAnimator
 
 class ViewController: UIViewController {
     
