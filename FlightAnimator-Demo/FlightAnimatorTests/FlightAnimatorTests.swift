@@ -26,7 +26,7 @@ class FlightAnimatorTests: XCTestCase {
             // Put the code you want to measure the time of here.
         }
     }
-    
+    /*
     func testFAVectorComponents() {
         
         XCTAssertEqual(FAVector(value: CGSizeMake(10,10)).components.count, 2, "CGSize Vector has incorrectnumber of components")
@@ -116,4 +116,6 @@ class FlightAnimatorTests: XCTestCase {
     func testCGColorVectorDifference() {
         // Fill This In
     }
+ 
+     */
 }

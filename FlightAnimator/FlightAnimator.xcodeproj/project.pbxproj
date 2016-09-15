@@ -8,8 +8,15 @@
 
 /* Begin PBXBuildFile section */
 		13009CED1D0B90C4008419C8 /* FlightAnimator.h in Headers */ = {isa = PBXBuildFile; fileRef = 13009CEC1D0B90C4008419C8 /* FlightAnimator.h */; settings = {ATTRIBUTES = (Public, ); }; };
+<<<<<<< Updated upstream
 		13E61E091D7A1B8D00999649 /* CoreFlightAnimation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 13E61DFF1D79FFB500999649 /* CoreFlightAnimation.framework */; };
 		13E61E0A1D7A1B9100999649 /* CoreFlightAnimation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 13E61E011D7A000A00999649 /* CoreFlightAnimation.framework */; };
+=======
+		13C86B0D1D89E23A00CC599C /* FlightAnimator+API.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13C86AF51D89E23A00CC599C /* FlightAnimator+API.swift */; };
+		13C86B0E1D89E23A00CC599C /* FlightAnimator+API.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13C86AF51D89E23A00CC599C /* FlightAnimator+API.swift */; };
+		13C86B111D89E23A00CC599C /* FlightAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13C86AF71D89E23A00CC599C /* FlightAnimator.swift */; };
+		13C86B121D89E23A00CC599C /* FlightAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13C86AF71D89E23A00CC599C /* FlightAnimator.swift */; };
+>>>>>>> Stashed changes
 		3A742D991D2F3D2E008E555E /* FlightAnimator.h in Headers */ = {isa = PBXBuildFile; fileRef = 13009CEC1D0B90C4008419C8 /* FlightAnimator.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		3AE43A7D1D7969AE00AD522C /* FlightAnimationMaker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AE43A7B1D7969AE00AD522C /* FlightAnimationMaker.swift */; };
 		3AE43A7E1D7969AE00AD522C /* FlightAnimationMaker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AE43A7B1D7969AE00AD522C /* FlightAnimationMaker.swift */; };
@@ -20,8 +27,13 @@
 /* Begin PBXFileReference section */
 		13009CE91D0B90C3008419C8 /* FlightAnimator.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = FlightAnimator.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		13009CEC1D0B90C4008419C8 /* FlightAnimator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FlightAnimator.h; sourceTree = "<group>"; };
+<<<<<<< Updated upstream
 		13E61DFF1D79FFB500999649 /* CoreFlightAnimation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFlightAnimation.framework; path = BUILT_PRODUCTS_DIR/CoreFlightAnimation.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		13E61E011D7A000A00999649 /* CoreFlightAnimation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFlightAnimation.framework; path = BUILT_PRODUCTS_DIR/CoreFlightAnimation.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+=======
+		13C86AF51D89E23A00CC599C /* FlightAnimator+API.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "FlightAnimator+API.swift"; sourceTree = "<group>"; };
+		13C86AF71D89E23A00CC599C /* FlightAnimator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlightAnimator.swift; sourceTree = "<group>"; };
+>>>>>>> Stashed changes
 		3A742D7D1D2F3B94008E555E /* FlightAnimator.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = FlightAnimator.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		3AE43A7B1D7969AE00AD522C /* FlightAnimationMaker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlightAnimationMaker.swift; sourceTree = "<group>"; };
 		3AE43A7C1D7969AE00AD522C /* FlightAnimator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlightAnimator.swift; sourceTree = "<group>"; };
@@ -78,11 +90,27 @@
 		3AE43A7A1D7969AE00AD522C /* Source */ = {
 			isa = PBXGroup;
 			children = (
+<<<<<<< Updated upstream
 				3AE43A7B1D7969AE00AD522C /* FlightAnimationMaker.swift */,
 				3AE43A7C1D7969AE00AD522C /* FlightAnimator.swift */,
 			);
 			name = Source;
 			path = ../../Source;
+=======
+				13C86AF41D89E23A00CC599C /* FAAnimationMaker */,
+			);
+			name = Source;
+			path = ../Source;
+			sourceTree = "<group>";
+		};
+		13C86AF41D89E23A00CC599C /* FAAnimationMaker */ = {
+			isa = PBXGroup;
+			children = (
+				13C86AF51D89E23A00CC599C /* FlightAnimator+API.swift */,
+				13C86AF71D89E23A00CC599C /* FlightAnimator.swift */,
+			);
+			path = FAAnimationMaker;
+>>>>>>> Stashed changes
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -155,6 +183,7 @@
 				TargetAttributes = {
 					13009CE81D0B90C3008419C8 = {
 						CreatedOnToolsVersion = 7.3;
+						LastSwiftMigration = 0800;
 					};
 					3A742D7C1D2F3B94008E555E = {
 						CreatedOnToolsVersion = 7.3.1;
@@ -201,8 +230,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+<<<<<<< Updated upstream
 				3AE43A7F1D7969AE00AD522C /* FlightAnimator.swift in Sources */,
 				3AE43A7D1D7969AE00AD522C /* FlightAnimationMaker.swift in Sources */,
+=======
+				13C86B111D89E23A00CC599C /* FlightAnimator.swift in Sources */,
+				13C86B0D1D89E23A00CC599C /* FlightAnimator+API.swift in Sources */,
+>>>>>>> Stashed changes
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -210,8 +244,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+<<<<<<< Updated upstream
 				3AE43A801D7969AE00AD522C /* FlightAnimator.swift in Sources */,
 				3AE43A7E1D7969AE00AD522C /* FlightAnimationMaker.swift in Sources */,
+=======
+				13C86B121D89E23A00CC599C /* FlightAnimator.swift in Sources */,
+				13C86B0E1D89E23A00CC599C /* FlightAnimator+API.swift in Sources */,
+>>>>>>> Stashed changes
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -325,6 +364,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.iagd.flightanimator.FlightAnimator-iOS";
 				PRODUCT_NAME = FlightAnimator;
 				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 2.3;
 			};
 			name = Debug;
 		};
@@ -342,6 +382,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.iagd.flightanimator.FlightAnimator-iOS";
 				PRODUCT_NAME = FlightAnimator;
 				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 2.3;
 			};
 			name = Release;
 		};

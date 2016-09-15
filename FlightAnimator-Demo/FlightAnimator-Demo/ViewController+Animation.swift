@@ -213,11 +213,18 @@ extension ViewController {
         }
 
         let duration : CGFloat = 0.5
+<<<<<<< Updated upstream
      
      
         dragView.cacheAnimation(forKey : AnimationKeys.PanGestureKey, timingPriority: self.animConfig.primaryTimingPriority) {[unowned self]  (anim) in
             anim.bounds(finalBounds).duration(0.5).easing(.OutQuadratic).primary(false)
             anim.position(finalCenter).duration(0.6).easing(easingFunction).primary(true)
+=======
+        dragView.animate(animConfig.primaryTimingPriority) { [unowned self] (animator) in
+            animator.bounds(finalBounds).duration(0.5).easing(.OutQuadratic).primary(false)
+            animator.position(finalCenter).duration(0.6).easing(easingFunction).primary(true)
+            
+>>>>>>> Stashed changes
             
             if self.animConfig.enableSecondaryView {
                 switch self.animConfig.triggerType {
@@ -245,9 +252,12 @@ extension ViewController {
                 }
             }
         }
+<<<<<<< Updated upstream
  
         dragView.applyCachedAnimation(forKey: AnimationKeys.PanGestureKey)
  
 
+=======
+>>>>>>> Stashed changes
     }
 }
