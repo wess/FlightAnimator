@@ -1,181 +1,164 @@
 //
-//  UIView+FAAnimation.swift
-//  FlightAnimator
+//  FlightAnimate+Private.swift
+//  
 //
-//  Created by Anton Doudarev on 2/24/16.
-//  Copyright © 2016 Anton Doudarev. All rights reserved.
+//  Created by Anton on 6/29/16.
+//
 //
 
 import Foundation
 import UIKit
 import CoreFlightAnimation
 
-internal let AutoAnimationKey =  "AutoAnimationKey"
-
-public extension UIView {
+public class FlightAnimator {
     
-    func animate(timingPriority : FAPrimaryTimingPriority = .MaxTime,
-                 @noescape animator : (a : FlightAnimator) -> Void ) {
-        
-        let animationKey = String(NSUUID().UUIDString)
-
-        let newAnimator = FlightAnimator(withView: self, forKey : animationKey,  priority : timingPriority, sequenceKey : animationKey)
-        animator(a : newAnimator)
+    internal weak var associatedView : UIView?
+    internal var animationKey : String?
+   
+    internal var sequence : FASequence = FASequence()
     
-        cachedSequences[animationKey]?.startSequence()
+    public var groupConfigurations = [String : GroupAnimationConfig]()
+
+    init(withView view : UIView, forKey key: String) {
+        animationKey = key
+        associatedView = view
+        configuredNewSequence()
+    }
+    /*
+    private func animationGroup() -> FAAnimationGroup? {
+        for (_, groupConfig) in groupConfigurations {
+            for (_, propConfig) in groupConfig.animationConfigurations {
+                groupConfig.animationGroup.animations?.append(propConfig.propertyAnimation)
+            }
+            
+            return groupConfig.animationGroup
+        }
+        return nil
+    }
+    */
+    private func configuredNewSequence() {
+        groupConfigurations[animationKey!] = GroupAnimationConfig(view: associatedView!, animationKey: animationKey!)
     }
     
-    func cacheAnimation(forKey key: String,
-                        timingPriority : FAPrimaryTimingPriority = .MaxTime,
-                        @noescape animator : (a : FlightAnimator) -> Void ) {
+    public func startSequence() {
         
-        let triggerAnimation = FAAnimationGroup()
-        triggerAnimation.weakLayer = layer
-        triggerAnimation.animationKey = key
+        for (_, groupConfig) in groupConfigurations {
+            for (_, propConfig) in groupConfig.animationConfigurations {
+                groupConfig.animationGroup.animations?.append(propConfig.propertyAnimation)
+            }
+        }
         
-        let newAnimator = FlightAnimator(withView: self, forKey : key, priority : timingPriority, sequenceKey : key)
-        animator(a : newAnimator)
+        guard let parentAnimation = (groupConfigurations[animationKey!]?.animationGroup) else  {
+            return
+        }
+
+        if sequence.rootSequenceAnimation == nil {
+            sequence.setRootSequenceAnimation(parentAnimation, onView: associatedView!)
+        }
+        
+        sequence.startSequence()
+    }
+    
+    internal func triggerAnimation(timingPriority : FAPrimaryTimingPriority = .MaxTime,
+                                   timeBased : Bool,
+                                   view: UIView,
+                                   progress: CGFloat = 0.0,
+                                   @noescape animator: (animator : FlightAnimator) -> Void) {
+        
+        guard let parentAnimation = (groupConfigurations[animationKey!]?.animationGroup) else  {
+            return
+        }
+
+        let triggerKey = NSUUID().UUIDString
+        
+        for (_, groupConfig) in groupConfigurations {
+            for (_, propConfig) in groupConfig.animationConfigurations {
+                groupConfigurations[animationKey!]?.animationGroup.animations?.append(propConfig.propertyAnimation)
+            }
+        }
+        
+        if sequence.rootSequenceAnimation == nil {
+            parentAnimation.sequenceDelegate = sequence
+            sequence.setRootSequenceAnimation(parentAnimation, onView: associatedView!)
+        }
+        
+        let newAnimator = FlightAnimator(withView: view, forKey : triggerKey)
+        animator(animator : newAnimator)
+        
+        for (_, groupConfig) in newAnimator.groupConfigurations {
+            for (_, propConfig) in groupConfig.animationConfigurations {
+                newAnimator.groupConfigurations[triggerKey]?.animationGroup.animations?.append(propConfig.propertyAnimation)
+            }
+        }
+        
+        
+        if timeBased && progress == 0.0 {
+            parentAnimation.appendSequenceAnimationOnStart(newAnimator.groupConfigurations[triggerKey]!.animationGroup, onView: view)
+        } else if timeBased && progress > 0.0 {
+            parentAnimation.appendSequenceAnimation(newAnimator.groupConfigurations[triggerKey]!.animationGroup, onView: view, atProgress : progress)
+        } else if timeBased == false {
+            parentAnimation.appendSequenceAnimation(newAnimator.groupConfigurations[triggerKey]!.animationGroup, onView: view, atValueProgress : progress)
+        }
     }
 }
 
-public class FlightAnimator : FlightAnimationMaker {
+public class GroupAnimationConfig  {
     
-    public func value(value : Any, forKeyPath key : String) -> PropertyAnimator {
-        
-        if let value = value as? UIColor {
-            animationConfigurations[key] = PropertyAnimator(value: value.CGColor,
-                                                                   forKeyPath: key,
-                                                                   view : associatedView!,
-                                                                   animationKey: animationKey!,
-                                                                   sequenceKey: sequenceKey!)
-        } else {
-            animationConfigurations[key] = PropertyAnimator(value: value,
-                                                                   forKeyPath: key,
-                                                                   view : associatedView!,
-                                                                   animationKey: animationKey!,
-                                                                   sequenceKey: sequenceKey!)
-        }
-        
-        return animationConfigurations[key]!
-    }
+    let animationGroup = FAAnimationGroup()
     
-    public func alpha(value : CGFloat) -> PropertyAnimator {
-        return self.value(value, forKeyPath : "opacity")
-    }
-    
-    public func anchorPoint(value : CGPoint) -> PropertyAnimator {
-        return self.value(value, forKeyPath : "anchorPoint")
-    }
-    
-    public func backgroundColor(value : CGColor) -> PropertyAnimator {
-        return self.value(value, forKeyPath : "backgroundColor")
-    }
-    
-    public func bounds(value : CGRect) -> PropertyAnimator {
-        return self.value(value, forKeyPath : "bounds")
-    }
+    var animationConfigurations = [String : PropertyAnimationConfig]()
+    let animationKey : String = String(NSUUID().UUIDString)
+    let animatingLayer : CALayer?
 
-    public func borderColor(value : CGColor) -> PropertyAnimator {
-        return self.value(value, forKeyPath : "borderColor")
-    }
-    
-    public func borderWidth(value : CGFloat) -> PropertyAnimator {
-        return self.value(value, forKeyPath : "borderWidth")
-    }
-
-    public func contentsRect(value : CGRect) -> PropertyAnimator {
-        return self.value(value, forKeyPath : "contentsRect")
-    }
-    
-    public func cornerRadius(value : CGPoint) -> PropertyAnimator {
-        return self.value(value, forKeyPath : "cornerRadius")
-    }
-    
-    public func opacity(value : CGFloat) -> PropertyAnimator {
-        return self.value(value, forKeyPath : "opacity")
-    }
-    
-    public func position(value : CGPoint) -> PropertyAnimator {
-        return self.value(value, forKeyPath : "position")
-    }
-    
-    public func shadowColor(value : CGColor) -> PropertyAnimator {
-        return self.value(value, forKeyPath : "shadowColor")
-    }
-    
-    public func shadowOffset(value : CGSize) -> PropertyAnimator {
-        return self.value(value, forKeyPath : "shadowOffset")
-    }
-    
-    public func shadowOpacity(value : CGFloat) -> PropertyAnimator {
-        return self.value(value, forKeyPath : "shadowOpacity")
-    }
-    
-    public func shadowRadius(value : CGFloat) -> PropertyAnimator {
-        return self.value(value, forKeyPath : "shadowRadius")
-    }
-    
-    public func size(value : CGSize) -> PropertyAnimator {
-        return self.bounds(CGRectMake(0, 0, value.width, value.height))
-    }
-    
-    public func sublayerTransform(value : CATransform3D) -> PropertyAnimator {
-        return self.value(value, forKeyPath : "sublayerTransform")
-    }
-    
-    public func transform(value : CATransform3D) -> PropertyAnimator{
-        return self.value(value, forKeyPath : "transform")
-    }
-    
-    public func zPosition(value : CGFloat) -> PropertyAnimator {
-        return self.value(value, forKeyPath : "zPosition")
+    init(view : UIView, animationKey : String?) {
+        animatingLayer = view.layer
     }
 }
 
-extension FlightAnimator {
+public class PropertyAnimationConfig  {
+
+    let propertyAnimation = FABasicAnimation()
+
+    var toValue : Any
+    var easingCurve : FAEasing = .Linear
     
-    public func triggerOnStart(onView view: UIView,
-                              timingPriority : FAPrimaryTimingPriority = .MaxTime,
-                              @noescape animator: (animator : FlightAnimator) -> Void) {
+    init(value: Any, forKeyPath key : String, view : UIView) {
         
-        triggerAnimation(timingPriority, timeBased : true, view: view, progress: 0.0, animator: animator)
+        propertyAnimation.keyPath = key
+        toValue = value
+        
+        if let currentValue = toValue as? CGPoint {
+            propertyAnimation.toValue =  NSValue(CGPoint :currentValue)
+        } else  if let currentValue = toValue as? CGSize {
+            propertyAnimation.toValue = NSValue( CGSize :currentValue)
+        } else  if let currentValue = toValue as? CGRect {
+            propertyAnimation.toValue = NSValue( CGRect : currentValue)
+        } else  if let currentValue = toValue as? CGFloat {
+            propertyAnimation.toValue = currentValue
+        } else  if let currentValue = toValue as? CATransform3D {
+            propertyAnimation.toValue =  NSValue( CATransform3D : currentValue)
+        } else if let currentValue = typeCastCGColor(toValue) {
+            propertyAnimation.toValue = currentValue
+        }
+
+        propertyAnimation.animatingLayer = view.layer
+        propertyAnimation.easingFunction = .Linear
+        propertyAnimation.duration = 0.0
+        propertyAnimation.isPrimary = false
     }
 
-    public func triggerOnCompletion(onView view: UIView,
-                                    timingPriority : FAPrimaryTimingPriority = .MaxTime,
-                                    @noescape animator: (animator : FlightAnimator) -> Void) {
-        
-        triggerAnimation(timingPriority, timeBased : true, view: view, progress: 1.0, animator: animator)
+    public func duration(duration : CGFloat) -> PropertyAnimationConfig {
+        propertyAnimation.duration = Double(duration)
+        return self
     }
     
-    public func triggerOnProgress(progress: CGFloat,
-                                  onView view: UIView,
-                                  timingPriority : FAPrimaryTimingPriority = .MaxTime,
-                                  @noescape animator: (animator : FlightAnimator) -> Void) {
-        
-        triggerAnimation(timingPriority, timeBased : true, view: view, progress: progress, animator: animator)
+    public func easing(easing : FAEasing) -> PropertyAnimationConfig {
+        propertyAnimation.easingFunction = easing
+        return self
     }
     
-    public func triggerOnValueProgress(progress: CGFloat,
-                                       onView view: UIView,
-                                       timingPriority : FAPrimaryTimingPriority = .MaxTime,
-                                       @noescape animator: (animator : FlightAnimator) -> Void) {
-        
-        triggerAnimation(timingPriority, timeBased : false, view: view, progress: progress, animator: animator)
-    }
-}
-
-extension FlightAnimator {
-    
-    public func setDidStopCallback(stopCallback : FAAnimationDidStop) {
-        if cachedSequences.keys.contains(sequenceKey!) {
-            cachedSequences[sequenceKey!]?._sequenceTriggers[animationKey!]!.triggeredAnimation?.setDidStopCallback(stopCallback)
-        }
-    }
-    
-    public func setDidStartCallback(startCallback : FAAnimationDidStart) {
-        if cachedSequences.keys.contains(sequenceKey!) {
-            cachedSequences[sequenceKey!]?._sequenceTriggers[animationKey!]!.triggeredAnimation?.setDidStartCallback(startCallback)
-        }
+    public func primary(primary : Bool) -> PropertyAnimationConfig {
+        propertyAnimation.isPrimary = primary
+        return self
     }
 }

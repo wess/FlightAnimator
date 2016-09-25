@@ -8,7 +8,7 @@
 
 import Foundation
 import UIKit
-
+import FlightAnimator
 
 extension ConfigurationView {
     
@@ -53,7 +53,7 @@ extension ConfigurationView {
             
             if lastSelectedDelaySegment != 0 && lastSelectedDelaySegment != delaySegnmentedControl.selectedSegmentIndex {
                 
-                atProgressLabel.animate(animator: { [unowned self] (animator) in
+                atProgressLabel.animate({ [unowned self] (animator) in
                     
                     animator.alpha(0.0).duration(0.5).easing(.OutSine)
                     
@@ -65,7 +65,7 @@ extension ConfigurationView {
                             self.atProgressLabel.text = "Trigger @ Value Progress: "
                         }
                         
-                        self.atProgressLabel.animate(animator: { (animator) in
+                        self.atProgressLabel.animate({ (animator) in
                             animator.alpha(1.0).duration(0.5).easing(.InSine)
                         })
                     })
@@ -76,6 +76,5 @@ extension ConfigurationView {
         lastSelectedDelaySegment = delaySegnmentedControl.selectedSegmentIndex
         interactionDelegate?.didUpdateTriggerType(delaySegnmentedControl.selectedSegmentIndex)
     }
-
 }
 

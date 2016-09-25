@@ -10,8 +10,6 @@ import Foundation
 import UIKit
 import CoreFlightAnimation
 import FlightAnimator
-import CoreFlightAnimation
-
 
 /**
  *  This is used to keep track of the settings in the configuration screen
@@ -105,7 +103,7 @@ extension ViewController {
                 animator.backgroundColor(UIColor.clearColor().CGColor).duration(0.6).easing(.Linear)
             })
         }
-     
+
     }
     
     func tappedShowConfig() {
@@ -127,35 +125,45 @@ extension ViewController {
         }
         
         
-        dragView.animate(animConfig.primaryTimingPriority) { [weak self] (a) in
-           
-            guard let weakSelf = self else {
-                return
-            }
+        let config = self.animConfig
+        
+        let toBounds = CGRectMake(0, 0, toFrame.size.width , toFrame.size.height)
+        let toPosition = CGCSRectGetCenter(toFrame)
+        
+        dragView.animate({ [unowned self] (a) in
             
-            let config = weakSelf.animConfig
+            a.timingPriority(self.animConfig.primaryTimingPriority)
+          
+            a.setDidStartCallback({ (anim) in
+                print("DID START")
+            })
             
-            let toBounds = CGRectMake(0, 0, toFrame.size.width , toFrame.size.height)
-            let toPosition = CGCSRectGetCenter(toFrame)
+            a.setDidStopCallback({ (anim, complete) in
+                print("DID STOP")
+            })
             
             a.bounds(toBounds).duration(duration).easing(config.sizeFunction).primary(config.sizePrimary)
             a.position(toPosition).duration(duration).easing(config.positionFunction).primary(config.positionPrimary)
             a.alpha(toAlpha).duration(duration).easing(config.alphaFunction).primary(config.alphaPrimary)
             a.transform(transform).duration(duration).easing(config.transformFunction).primary(config.transformPrimary)
             
+        
             if config.enableSecondaryView {
                 
-                let currentBounds = CGRectMake(0, 0, weakSelf.lastToFrame.size.width , weakSelf.lastToFrame.size.height)
-                let currentPosition = CGCSRectGetCenter(weakSelf.lastToFrame)
-                let currentAlpha = weakSelf.dragView.alpha
-                let currentTransform = weakSelf.dragView.layer.transform
+                let currentBounds = CGRectMake(0, 0, self.lastToFrame.size.width , self.lastToFrame.size.height)
+                let currentPosition = CGCSRectGetCenter(self.lastToFrame)
+                let currentAlpha = self.dragView.alpha
+                let currentTransform = self.dragView.layer.transform
                 
                 switch config.triggerType {
                 case 1:
                     a.triggerOnProgress(config.triggerProgress,
-                                        onView: weakSelf.dragView2,
+                                        onView: self.dragView2,
                                         animator: { (a) in
                        
+                                            a.setDidStopCallback({ (anim, complete) in
+                                                "DID STOP"
+                                            })
                         a.bounds(currentBounds).duration(duration).easing(config.sizeFunction).primary(config.sizePrimary)
                         a.position(currentPosition).duration(duration).easing(config.positionFunction).primary(config.positionPrimary)
                         a.alpha(currentAlpha).duration(duration).easing(config.alphaFunction).primary(config.alphaPrimary)
@@ -164,7 +172,7 @@ extension ViewController {
                     })
                 case 2:
                     a.triggerOnValueProgress(config.triggerProgress,
-                                             onView: weakSelf.dragView2,
+                                             onView: self.dragView2,
                                              animator: { (a) in
                                                 
                         a.bounds(currentBounds).duration(duration).easing(config.sizeFunction).primary(config.sizePrimary)
@@ -173,17 +181,18 @@ extension ViewController {
                         a.transform(currentTransform).duration(duration).easing(config.transformFunction).primary(config.transformPrimary)
                     })
                 default:
-                    a.triggerOnStart(onView: weakSelf.dragView2,
+                    a.triggerOnStart(onView: self.dragView2,
                                      animator: { (a) in
                                         
                         a.bounds(currentBounds).duration(duration).easing(config.sizeFunction).primary(config.sizePrimary)
                         a.position(currentPosition).duration(duration).easing(config.positionFunction).primary(config.positionPrimary)
                         a.alpha(currentAlpha).duration(duration).easing(config.alphaFunction).primary(config.alphaPrimary)
                         a.transform(currentTransform).duration(duration).easing(config.transformFunction).primary(config.transformPrimary)
+                    
                     })
                 }
             }
-        }
+        })
         
         lastToFrame = toFrame
     }
@@ -213,19 +222,14 @@ extension ViewController {
         }
 
         let duration : CGFloat = 0.5
-<<<<<<< Updated upstream
-     
-     
-        dragView.cacheAnimation(forKey : AnimationKeys.PanGestureKey, timingPriority: self.animConfig.primaryTimingPriority) {[unowned self]  (anim) in
+        
+        dragView.animate({ [unowned self] (anim) in
+           
+            anim.timingPriority(self.animConfig.primaryTimingPriority)
+            
             anim.bounds(finalBounds).duration(0.5).easing(.OutQuadratic).primary(false)
             anim.position(finalCenter).duration(0.6).easing(easingFunction).primary(true)
-=======
-        dragView.animate(animConfig.primaryTimingPriority) { [unowned self] (animator) in
-            animator.bounds(finalBounds).duration(0.5).easing(.OutQuadratic).primary(false)
-            animator.position(finalCenter).duration(0.6).easing(easingFunction).primary(true)
-            
->>>>>>> Stashed changes
-            
+           
             if self.animConfig.enableSecondaryView {
                 switch self.animConfig.triggerType {
                 case 1:
@@ -251,13 +255,6 @@ extension ViewController {
                     })
                 }
             }
-        }
-<<<<<<< Updated upstream
- 
-        dragView.applyCachedAnimation(forKey: AnimationKeys.PanGestureKey)
- 
-
-=======
->>>>>>> Stashed changes
+        })
     }
 }
