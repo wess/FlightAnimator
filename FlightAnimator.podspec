@@ -13,5 +13,5 @@ Pod::Spec.new do |s|
 
   s.ios.deployment_target = '8.0'
   s.tvos.deployment_target = '9.0'
-  s.source_files = "Source/*.swift", "Source/Extensions/*.*", "Source/FAAnimation/*.*", "Source/FAInterpolation/*.*", "Source/FASequence/*.*"
+  s.source_files = "Source/*.swift", "Source/CoreFlightAnimation/Extensions/*.*", "Source/CoreFlightAnimation/FAAnimation/*.*", "Source/CoreFlightAnimation/FAInterpolation/*.*", "Source/CoreFlightAnimation/FASequence/*.*"
 end
