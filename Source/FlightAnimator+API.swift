@@ -8,7 +8,6 @@
 
 import Foundation
 import UIKit
-import CoreFlightAnimation
 
 public extension UIView {
     
